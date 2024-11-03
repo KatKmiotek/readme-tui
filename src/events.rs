@@ -1,19 +1,24 @@
 use crossterm::event::{self, KeyCode};
+use std::cell::RefCell;
 use std::fs::{self, File};
 use std::io::{self, Write};
 use std::path::Path;
+use std::rc::Rc;
 use std::time::Duration;
 
+use crate::screen::Screen;
 pub struct EventHandler {
     pub should_quit: bool,
     pub content: Vec<String>,
+    screen: Rc<RefCell<Screen>>,
 }
 
 impl EventHandler {
-    pub fn new() -> Self {
+    pub fn new(screen: Rc<RefCell<Screen>>) -> Self {
         Self {
             should_quit: false,
             content: Vec::new(),
+            screen
         }
     }
 
@@ -27,6 +32,8 @@ impl EventHandler {
                     KeyCode::Char('s') => {
                         self.save_to_file()?;
                     }
+                    KeyCode::Down => self.screen.borrow_mut().next(),
+                    KeyCode::Up => self.screen.borrow_mut().previous(),
                     _ => {}
                 }
             }
