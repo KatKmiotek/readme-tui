@@ -18,7 +18,7 @@ impl EventHandler {
         Self {
             should_quit: false,
             content: Vec::new(),
-            screen
+            screen,
         }
     }
 
@@ -31,6 +31,9 @@ impl EventHandler {
                     }
                     KeyCode::Char('s') => {
                         self.save_to_file()?;
+                    }
+                    KeyCode::Char('p') => {
+                        self.screen.borrow_mut().toggle_popup();
                     }
                     KeyCode::Down => self.screen.borrow_mut().next(),
                     KeyCode::Up => self.screen.borrow_mut().previous(),
