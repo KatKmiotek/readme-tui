@@ -6,6 +6,7 @@ use std::path::Path;
 use std::rc::Rc;
 use std::time::Duration;
 
+use crate::popup::PopupButton;
 use crate::screen::Screen;
 pub struct EventHandler {
     pub should_quit: bool,
@@ -32,8 +33,28 @@ impl EventHandler {
                     KeyCode::Char('s') => {
                         self.save_to_file()?;
                     }
-                    KeyCode::Char('p') => {
+                    KeyCode::Esc => {
                         self.screen.borrow_mut().toggle_popup();
+                    }
+                    KeyCode::Right => {
+                        self.screen.borrow_mut().next_button();
+                    }
+                    KeyCode::Left => {
+                        self.screen.borrow_mut().previous_button();
+                    }
+                    KeyCode::Enter => {
+                        match self.screen.borrow().select_button() {
+                            PopupButton::Cancel => {
+                                self.screen.borrow_mut().toggle_popup();
+                            }
+                            PopupButton::ExitWithoutSaving => {
+                                self.should_quit = true;
+                            }
+                            PopupButton::ExitWithSave => {
+                                self.save_to_file()?;
+                                self.should_quit = true;
+                            }
+                        }
                     }
                     KeyCode::Down => self.screen.borrow_mut().next(),
                     KeyCode::Up => self.screen.borrow_mut().previous(),

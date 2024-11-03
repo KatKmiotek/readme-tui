@@ -1,14 +1,15 @@
 use ratatui::{
-    layout::{Constraint, Direction, Flex, Layout, Rect},
-    style::{Color, Modifier, Style},
-    widgets::{Block, Borders, Clear, List, ListItem, ListState},
-    Frame,
+    layout::{Constraint, Direction, Layout}, style::{Color, Style}, widgets::{Block, Borders, List, ListItem, ListState}, Frame
 };
+
+use crate::popup::{show_popup, PopupButton};
+
 
 pub struct Screen {
     items: Vec<String>,
     list_state: ListState,
     show_popup: bool,
+    selected_button: usize,
 }
 impl Screen {
     pub fn new() -> Self {
@@ -22,6 +23,7 @@ impl Screen {
             ],
             list_state,
             show_popup: false,
+            selected_button: 0
         }
     }
     pub fn get_layout(&mut self, frame: &mut Frame) {
@@ -52,21 +54,26 @@ impl Screen {
 
         frame.render_stateful_widget(list, navigation_menu, &mut self.list_state);
         if self.show_popup {
-            let popup_area = Self::set_popup_area(area, 80, 30);
-            let popup_block = Block::default()
-                .borders(Borders::ALL)
-                .title("Popup")
-                .title_alignment(ratatui::layout::Alignment::Center)
-                .border_style(Style::default().fg(Color::Blue))
-                .style(Style::default().bg(Color::LightGreen).fg(Color::Black))
-                .title_style(
-                    Style::default()
-                        .fg(Color::Black)
-                        .add_modifier(Modifier::BOLD),
-                );
+            show_popup( frame, area);
+        }
+    }
+    pub fn next_button(&mut self) {
+        self.selected_button = (self.selected_button + 1) % 3;
+    }
 
-            frame.render_widget(Clear, popup_area);
-            frame.render_widget(popup_block, popup_area);
+    pub fn previous_button(&mut self) {
+        if self.selected_button == 0 {
+            self.selected_button = 2;
+        } else {
+            self.selected_button -= 1;
+        }
+    }
+    pub fn select_button(&self) -> PopupButton {
+        match self.selected_button {
+            0 => PopupButton::Cancel,
+            1 => PopupButton::ExitWithoutSaving,
+            2 => PopupButton::ExitWithSave,
+            _ => unreachable!(),
         }
     }
     pub fn next(&mut self) {
@@ -98,13 +105,5 @@ impl Screen {
     pub fn toggle_popup(&mut self) {
         self.show_popup = !self.show_popup;
     }
-    fn set_popup_area(area: Rect, vertical_percentage: u16, horizontal_percentage: u16) -> Rect {
-        let vertical =
-            Layout::vertical([Constraint::Percentage(horizontal_percentage)]).flex(Flex::Center);
-        let horizontal =
-            Layout::horizontal([Constraint::Percentage(vertical_percentage)]).flex(Flex::Center);
-        let [area] = vertical.areas(area);
-        let [area] = horizontal.areas(area);
-        area
-    }
+
 }

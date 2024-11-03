@@ -1,5 +1,6 @@
 mod app;
 mod events;
+mod popup;
 pub mod screen;
 use app::App;
 use color_eyre::eyre::Result;
