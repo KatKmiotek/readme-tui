@@ -1,4 +1,6 @@
 mod app;
+mod events;
+mod ui;
 use app::App;
 use color_eyre::eyre::Result;
 
