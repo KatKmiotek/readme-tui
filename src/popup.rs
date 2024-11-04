@@ -20,14 +20,29 @@ impl PopupButton {
             PopupButton::ExitWithSave => "Exit with save",
         }
     }
+    pub fn style(&self) -> Style {
+        match self {
+            PopupButton::Cancel => Style::default().fg(Color::Black).bg(Color::Gray),
+            PopupButton::ExitWithoutSaving => Style::default().fg(Color::Black).bg(Color::Red),
+            PopupButton::ExitWithSave => Style::default().fg(Color::Black).bg(Color::Green),
+        }
+    }
 }
 
 pub struct Popup {
     selected_button: usize,
+    buttons: Vec<PopupButton>,
 }
 impl Popup {
     pub fn new() -> Self {
-        Self { selected_button: 0 }
+        Self {
+            selected_button: 0,
+            buttons: vec![
+                PopupButton::Cancel,
+                PopupButton::ExitWithoutSaving,
+                PopupButton::ExitWithSave,
+            ],
+        }
     }
 
     pub fn next_button(&mut self) {
@@ -68,7 +83,7 @@ pub fn show_popup(frame: &mut Frame, area: Rect) {
         .split(popup_area);
     let popup_text = Paragraph::new(
         "You are about to exit program. What would you like to do with current changes?",
-    )
+    ).block(Block::new().padding(Padding::new(0, 0, 0, 0)))
     .alignment(Alignment::Center);
     frame.render_widget(popup_text, inner_chunks[0]);
 
@@ -84,11 +99,6 @@ pub fn show_popup(frame: &mut Frame, area: Rect) {
         )
         .split(inner_chunks[1]);
 
-    let button_styles = [
-        Style::default().fg(Color::Black).bg(Color::Gray),
-        Style::default().fg(Color::Black).bg(Color::Red),
-        Style::default().fg(Color::Black).bg(Color::Green),
-    ];
     let button_text = Paragraph::new(PopupButton::Cancel.label()).block(
         Block::new()
             .style(Style::new().bg(Color::Black))
@@ -98,7 +108,7 @@ pub fn show_popup(frame: &mut Frame, area: Rect) {
                 button_chunks[0].height / 2,
                 0,
             ))
-            .style(button_styles[0]),
+            .style(PopupButton::Cancel.style()),
     );
     frame.render_widget(button_text, button_chunks[0]);
 }
