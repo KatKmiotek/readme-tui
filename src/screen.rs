@@ -1,15 +1,16 @@
 use ratatui::{
-    layout::{Constraint, Direction, Layout}, style::{Color, Style}, widgets::{Block, Borders, List, ListItem, ListState}, Frame
+    layout::{Constraint, Direction, Layout},
+    style::{Color, Style},
+    widgets::{Block, Borders, List, ListItem, ListState},
+    Frame,
 };
 
-use crate::popup::{show_popup, PopupButton};
-
+use crate::popup::show_popup;
 
 pub struct Screen {
     items: Vec<String>,
     list_state: ListState,
     show_popup: bool,
-    selected_button: usize,
 }
 impl Screen {
     pub fn new() -> Self {
@@ -23,7 +24,6 @@ impl Screen {
             ],
             list_state,
             show_popup: false,
-            selected_button: 0
         }
     }
     pub fn get_layout(&mut self, frame: &mut Frame) {
@@ -54,28 +54,10 @@ impl Screen {
 
         frame.render_stateful_widget(list, navigation_menu, &mut self.list_state);
         if self.show_popup {
-            show_popup( frame, area);
+            show_popup(frame, area);
         }
-    }
-    pub fn next_button(&mut self) {
-        self.selected_button = (self.selected_button + 1) % 3;
     }
 
-    pub fn previous_button(&mut self) {
-        if self.selected_button == 0 {
-            self.selected_button = 2;
-        } else {
-            self.selected_button -= 1;
-        }
-    }
-    pub fn select_button(&self) -> PopupButton {
-        match self.selected_button {
-            0 => PopupButton::Cancel,
-            1 => PopupButton::ExitWithoutSaving,
-            2 => PopupButton::ExitWithSave,
-            _ => unreachable!(),
-        }
-    }
     pub fn next(&mut self) {
         let i = match self.list_state.selected() {
             Some(i) => {
@@ -105,5 +87,4 @@ impl Screen {
     pub fn toggle_popup(&mut self) {
         self.show_popup = !self.show_popup;
     }
-
 }

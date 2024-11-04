@@ -5,7 +5,6 @@ use ratatui::{
     Frame,
 };
 
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PopupButton {
     Cancel,
@@ -19,6 +18,35 @@ impl PopupButton {
             PopupButton::Cancel => "Cancel",
             PopupButton::ExitWithoutSaving => "Exit without saving",
             PopupButton::ExitWithSave => "Exit with save",
+        }
+    }
+}
+
+pub struct Popup {
+    selected_button: usize,
+}
+impl Popup {
+    pub fn new() -> Self {
+        Self { selected_button: 0 }
+    }
+
+    pub fn next_button(&mut self) {
+        self.selected_button = (self.selected_button + 1) % 3;
+    }
+
+    pub fn previous_button(&mut self) {
+        if self.selected_button == 0 {
+            self.selected_button = 2;
+        } else {
+            self.selected_button -= 1;
+        }
+    }
+    pub fn select_button(&self) -> PopupButton {
+        match self.selected_button {
+            0 => PopupButton::Cancel,
+            1 => PopupButton::ExitWithoutSaving,
+            2 => PopupButton::ExitWithSave,
+            _ => unreachable!(),
         }
     }
 }
@@ -61,8 +89,7 @@ pub fn show_popup(frame: &mut Frame, area: Rect) {
         Style::default().fg(Color::Black).bg(Color::Red),
         Style::default().fg(Color::Black).bg(Color::Green),
     ];
-    let button_labels = ["Cancel", "Exit without saving", "Exit with save"];
-    let button_text = Paragraph::new(button_labels[0]).block(
+    let button_text = Paragraph::new(PopupButton::Cancel.label()).block(
         Block::new()
             .style(Style::new().bg(Color::Black))
             .padding(Padding::new(
