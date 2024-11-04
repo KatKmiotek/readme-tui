@@ -6,19 +6,22 @@ use std::path::Path;
 use std::rc::Rc;
 use std::time::Duration;
 
+use crate::popup::{Popup, PopupButton};
 use crate::screen::Screen;
 pub struct EventHandler {
     pub should_quit: bool,
     pub content: Vec<String>,
     screen: Rc<RefCell<Screen>>,
+    popup: Rc<RefCell<Popup>>,
 }
 
 impl EventHandler {
-    pub fn new(screen: Rc<RefCell<Screen>>) -> Self {
+    pub fn new(screen: Rc<RefCell<Screen>>, popup: Rc<RefCell<Popup>>) -> Self {
         Self {
             should_quit: false,
             content: Vec::new(),
-            screen
+            screen,
+            popup,
         }
     }
 
@@ -32,6 +35,27 @@ impl EventHandler {
                     KeyCode::Char('s') => {
                         self.save_to_file()?;
                     }
+                    KeyCode::Esc => {
+                        self.screen.borrow_mut().toggle_popup();
+                    }
+                    KeyCode::Right => {
+                        self.popup.borrow_mut().next_button();
+                    }
+                    KeyCode::Left => {
+                        self.popup.borrow_mut().previous_button();
+                    }
+                    KeyCode::Enter => match self.popup.borrow().select_button() {
+                        PopupButton::Cancel => {
+                            self.screen.borrow_mut().toggle_popup();
+                        }
+                        PopupButton::ExitWithoutSaving => {
+                            self.should_quit = true;
+                        }
+                        PopupButton::ExitWithSave => {
+                            self.save_to_file()?;
+                            self.should_quit = true;
+                        }
+                    },
                     KeyCode::Down => self.screen.borrow_mut().next(),
                     KeyCode::Up => self.screen.borrow_mut().previous(),
                     _ => {}

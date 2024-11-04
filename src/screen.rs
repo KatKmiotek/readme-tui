@@ -5,9 +5,12 @@ use ratatui::{
     Frame,
 };
 
+use crate::popup::Popup;
+
 pub struct Screen {
     items: Vec<String>,
     list_state: ListState,
+    show_popup: bool,
 }
 impl Screen {
     pub fn new() -> Self {
@@ -20,13 +23,15 @@ impl Screen {
                 "Item 3".to_string(),
             ],
             list_state,
+            show_popup: false,
         }
     }
-    pub fn get_layout(&mut self, frame: &mut Frame) {
+    pub fn get_layout(&mut self, frame: &mut Frame, popup: &mut Popup) {
+        let area = frame.area();
         let layout = Layout::default()
             .direction(Direction::Horizontal)
             .constraints([Constraint::Percentage(20), Constraint::Percentage(80)])
-            .split(frame.area());
+            .split(area);
         let navigation_menu = layout[0];
         let content_area = layout[1];
 
@@ -42,17 +47,17 @@ impl Screen {
             .map(|i| ListItem::new(i.as_str()))
             .collect();
         let list = List::new(items)
-        .block(Block::bordered().title("Topics"))
-        .style(Style::default().fg(Color::White))
-        .highlight_style(
-            Style::default()
-                .bg(Color::Yellow)
-                .fg(Color::Black)
-        )
-        .highlight_symbol(">> ");
+            .block(Block::bordered().title("Topics"))
+            .style(Style::default().fg(Color::White))
+            .highlight_style(Style::default().bg(Color::Yellow).fg(Color::Black))
+            .highlight_symbol(">> ");
 
         frame.render_stateful_widget(list, navigation_menu, &mut self.list_state);
+        if self.show_popup {
+            popup.show_popup(frame, area);
+        }
     }
+
     pub fn next(&mut self) {
         let i = match self.list_state.selected() {
             Some(i) => {
@@ -78,5 +83,8 @@ impl Screen {
             None => 0,
         };
         self.list_state.select(Some(i));
+    }
+    pub fn toggle_popup(&mut self) {
+        self.show_popup = !self.show_popup;
     }
 }

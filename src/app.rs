@@ -1,4 +1,4 @@
-use crate::{events::EventHandler, screen::Screen};
+use crate::{events::EventHandler, popup::Popup, screen::Screen};
 use color_eyre::Result;
 use crossterm::{
     event::{DisableMouseCapture, EnableMouseCapture},
@@ -6,19 +6,26 @@ use crossterm::{
     ExecutableCommand,
 };
 use ratatui::{backend::CrosstermBackend, Terminal};
-use std::{cell::RefCell, io::{stdout, Stdout}, rc::Rc};
+use std::{
+    cell::RefCell,
+    io::{stdout, Stdout},
+    rc::Rc,
+};
 pub struct App {
     event_handler: EventHandler,
     screen: Rc<RefCell<Screen>>,
+    popup: Rc<RefCell<Popup>>,
 }
 
 impl App {
     pub fn new() -> App {
         let screen = Rc::new(RefCell::new(Screen::new()));
-        let event_handler = EventHandler::new(Rc::clone(&screen));
+        let popup = Rc::new(RefCell::new(Popup::new()));
+        let event_handler = EventHandler::new(Rc::clone(&screen), Rc::clone(&popup));
         Self {
             event_handler,
             screen,
+            popup,
         }
     }
 
@@ -42,8 +49,11 @@ impl App {
 
     fn run_app(&mut self, terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()> {
         loop {
-            // terminal.draw(|f| ui(f))?;
-            terminal.draw(|f| self.screen.borrow_mut().get_layout(f))?;
+            terminal.draw(|f| {
+                self.screen
+                    .borrow_mut()
+                    .get_layout(f, &mut self.popup.borrow_mut())
+            })?;
             self.event_handler.listen_for_keyboard_events()?;
 
             if self.event_handler.should_quit {
