@@ -1,6 +1,6 @@
 use ratatui::{
     layout::{Alignment, Constraint, Direction, Flex, Layout, Rect},
-    style::{Color, Style},
+    style::{Color, Modifier, Style},
     widgets::{Block, Borders, Clear, Padding, Paragraph},
     Frame,
 };
@@ -81,10 +81,16 @@ impl Popup {
             .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
             .split(popup_area);
         let popup_text = Paragraph::new(
-            "You are about to exit program. What would you like to do with current changes?",
+            "You are about to exit the program. What would you like to do with current changes?",
         )
-        .block(Block::new().padding(Padding::new(0, 0, 0, 0)))
-        .alignment(Alignment::Center);
+        .block(
+            Block::default()
+                .borders(Borders::NONE)
+                .padding(Padding::new(2, 2, 2, 1)),
+        )
+        .alignment(Alignment::Center)
+        .style(Style::default().fg(Color::White));
+
         frame.render_widget(popup_text, inner_chunks[0]);
         let button_chunks = Layout::default()
             .direction(Direction::Horizontal)
@@ -100,7 +106,7 @@ impl Popup {
 
         for (i, &button) in self.buttons.iter().enumerate() {
             let button_style = if i == self.selected_button_index {
-                Style::default().fg(Color::Black).bg(Color::Yellow)
+                button.style().add_modifier(Modifier::BOLD)
             } else {
                 button.style()
             };
