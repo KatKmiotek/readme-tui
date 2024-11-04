@@ -14,6 +14,7 @@ use std::{
 pub struct App {
     event_handler: EventHandler,
     screen: Rc<RefCell<Screen>>,
+    popup: Rc<RefCell<Popup>>,
 }
 
 impl App {
@@ -24,6 +25,7 @@ impl App {
         Self {
             event_handler,
             screen,
+            popup,
         }
     }
 
@@ -47,8 +49,11 @@ impl App {
 
     fn run_app(&mut self, terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()> {
         loop {
-            // terminal.draw(|f| ui(f))?;
-            terminal.draw(|f| self.screen.borrow_mut().get_layout(f))?;
+            terminal.draw(|f| {
+                self.screen
+                    .borrow_mut()
+                    .get_layout(f, &mut self.popup.borrow_mut())
+            })?;
             self.event_handler.listen_for_keyboard_events()?;
 
             if self.event_handler.should_quit {

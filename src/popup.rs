@@ -64,51 +64,51 @@ impl Popup {
             _ => unreachable!(),
         }
     }
+    pub fn show_popup(&mut self, frame: &mut Frame, area: Rect) {
+        let vertical = Layout::vertical([Constraint::Percentage(30)]).flex(Flex::Center);
+        let horizontal = Layout::horizontal([Constraint::Percentage(80)]).flex(Flex::Center);
+        let [popup_area] = vertical.areas(area);
+        let [popup_area] = horizontal.areas(popup_area);
+        let popup_block = Block::default()
+            .borders(Borders::ALL)
+            .border_style(Style::default().fg(Color::Blue));
+    
+        frame.render_widget(Clear, popup_area);
+        frame.render_widget(popup_block, popup_area);
+    
+        let inner_chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+            .split(popup_area);
+        let popup_text = Paragraph::new(
+            "You are about to exit program. What would you like to do with current changes?",
+        ).block(Block::new().padding(Padding::new(0, 0, 0, 0)))
+        .alignment(Alignment::Center);
+        frame.render_widget(popup_text, inner_chunks[0]);
+    
+        let button_chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints(
+                [
+                    Constraint::Percentage(33),
+                    Constraint::Percentage(33),
+                    Constraint::Percentage(33),
+                ]
+                .as_ref(),
+            )
+            .split(inner_chunks[1]);
+        let button_text = Paragraph::new(PopupButton::Cancel.label()).block(
+            Block::new()
+                .style(Style::new().bg(Color::Black))
+                .padding(Padding::new(
+                    button_chunks[0].width / 2,
+                    0,
+                    button_chunks[0].height / 2,
+                    0,
+                ))
+                .style(PopupButton::Cancel.style()),
+        );
+        frame.render_widget(button_text, button_chunks[0]);
+    }
 }
-pub fn show_popup(frame: &mut Frame, area: Rect) {
-    let vertical = Layout::vertical([Constraint::Percentage(30)]).flex(Flex::Center);
-    let horizontal = Layout::horizontal([Constraint::Percentage(80)]).flex(Flex::Center);
-    let [popup_area] = vertical.areas(area);
-    let [popup_area] = horizontal.areas(popup_area);
-    let popup_block = Block::default()
-        .borders(Borders::ALL)
-        .border_style(Style::default().fg(Color::Blue));
 
-    frame.render_widget(Clear, popup_area);
-    frame.render_widget(popup_block, popup_area);
-
-    let inner_chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
-        .split(popup_area);
-    let popup_text = Paragraph::new(
-        "You are about to exit program. What would you like to do with current changes?",
-    ).block(Block::new().padding(Padding::new(0, 0, 0, 0)))
-    .alignment(Alignment::Center);
-    frame.render_widget(popup_text, inner_chunks[0]);
-
-    let button_chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints(
-            [
-                Constraint::Percentage(33),
-                Constraint::Percentage(33),
-                Constraint::Percentage(33),
-            ]
-            .as_ref(),
-        )
-        .split(inner_chunks[1]);
-
-    let button_text = Paragraph::new(PopupButton::Cancel.label()).block(
-        Block::new()
-            .style(Style::new().bg(Color::Black))
-            .padding(Padding::new(
-                button_chunks[0].width / 2,
-                0,
-                button_chunks[0].height / 2,
-                0,
-            ))
-            .style(PopupButton::Cancel.style()),
-    );
-    frame.render_widget(button_text, button_chunks[0]);
-}

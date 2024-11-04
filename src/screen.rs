@@ -5,7 +5,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::popup::show_popup;
+use crate::popup::Popup;
 
 pub struct Screen {
     items: Vec<String>,
@@ -26,7 +26,7 @@ impl Screen {
             show_popup: false,
         }
     }
-    pub fn get_layout(&mut self, frame: &mut Frame) {
+    pub fn get_layout(&mut self, frame: &mut Frame, popup: &mut Popup) {
         let area = frame.area();
         let layout = Layout::default()
             .direction(Direction::Horizontal)
@@ -54,7 +54,7 @@ impl Screen {
 
         frame.render_stateful_widget(list, navigation_menu, &mut self.list_state);
         if self.show_popup {
-            show_popup(frame, area);
+            popup.show_popup(frame, area);
         }
     }
 
