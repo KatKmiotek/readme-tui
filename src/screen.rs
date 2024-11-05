@@ -96,3 +96,78 @@ impl Screen {
         self.show_popup = !self.show_popup;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::Screen;
+
+    #[test]
+    fn test_default_selection() {
+        let screen = Screen::new();
+        assert_eq!(screen.list_state.selected(), Some(0));
+    }
+
+    #[test]
+    fn test_next_navigation() {
+        let mut screen = Screen::new();
+        assert_eq!(screen.list_state.selected(), Some(0));
+
+        screen.next();
+        assert_eq!(screen.list_state.selected(), Some(1));
+
+        screen.next();
+        assert_eq!(screen.list_state.selected(), Some(2));
+
+        screen.next();
+        assert_eq!(screen.list_state.selected(), Some(3));
+
+        screen.next();
+        assert_eq!(screen.list_state.selected(), Some(0));
+    }
+
+    #[test]
+    fn test_previous_navigation() {
+        let mut screen = Screen::new();
+
+        assert_eq!(screen.list_state.selected(), Some(0));
+
+        screen.previous();
+        assert_eq!(screen.list_state.selected(), Some(screen.items.len() - 1));
+
+        screen.previous();
+        assert_eq!(screen.list_state.selected(), Some(screen.items.len() - 2));
+    }
+
+    #[test]
+    fn test_toggle_popup() {
+        let mut screen = Screen::new();
+        assert!(!screen.show_popup);
+
+        screen.toggle_popup();
+        assert!(screen.show_popup);
+
+        screen.toggle_popup();
+        assert!(!screen.show_popup);
+    }
+
+    #[test]
+    fn test_screen_items_length() {
+        let screen = Screen::new();
+
+        assert_eq!(screen.items.len(), 4);
+        assert_eq!(screen.items[0], "Tutorials");
+        assert_eq!(screen.items[1], "How-to Guides");
+        assert_eq!(screen.items[2], "Explanation");
+        assert_eq!(screen.items[3], "Reference");
+    }
+
+    #[test]
+    fn test_selection_persistence_after_toggle_popup() {
+        let mut screen = Screen::new();
+        screen.next();
+        assert_eq!(screen.list_state.selected(), Some(1));
+
+        screen.toggle_popup();
+        assert_eq!(screen.list_state.selected(), Some(1));
+    }
+}

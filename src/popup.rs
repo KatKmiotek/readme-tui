@@ -126,3 +126,52 @@ impl Popup {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_initial_selected_button() {
+        let popup = Popup::new();
+        assert_eq!(popup.select_button(), PopupButton::Cancel);
+    }
+
+    #[test]
+    fn test_next_button() {
+        let mut popup = Popup::new();
+        popup.next_button();
+        assert_eq!(popup.select_button(), PopupButton::ExitWithoutSaving);
+
+        popup.next_button();
+        assert_eq!(popup.select_button(), PopupButton::ExitWithSave);
+
+        popup.next_button();
+        assert_eq!(popup.select_button(), PopupButton::Cancel);
+    }
+
+    #[test]
+    fn test_previous_button() {
+        let mut popup = Popup::new();
+
+        popup.previous_button();
+        assert_eq!(popup.select_button(), PopupButton::ExitWithSave);
+
+        popup.previous_button();
+        assert_eq!(popup.select_button(), PopupButton::ExitWithoutSaving);
+
+        popup.previous_button();
+        assert_eq!(popup.select_button(), PopupButton::Cancel);
+    }
+
+    #[test]
+    fn test_popup_button_labels() {
+        let cancel = PopupButton::Cancel;
+        let exit_without_saving = PopupButton::ExitWithoutSaving;
+        let exit_with_save = PopupButton::ExitWithSave;
+
+        assert_eq!(cancel.label(), "Cancel");
+        assert_eq!(exit_without_saving.label(), "Exit without saving");
+        assert_eq!(exit_with_save.label(), "Exit with save");
+    }
+}
