@@ -122,7 +122,7 @@ impl Popup {
                 Block::default()
                     .borders(Borders::ALL)
                     .padding(Padding::new(12, 0, 1, 0))
-                    .title_alignment(Alignment::Center)
+                    .title_alignment(Alignment::Center),
             );
 
             frame.render_widget(button_text, button_spaces[i]);
