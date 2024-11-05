@@ -12,6 +12,13 @@ pub struct Screen {
     list_state: ListState,
     show_popup: bool,
 }
+
+impl Default for Screen {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Screen {
     pub fn new() -> Self {
         let mut list_state = ListState::default();
