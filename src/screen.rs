@@ -18,9 +18,10 @@ impl Screen {
         list_state.select(Some(0));
         Self {
             items: vec![
-                "Item 1".to_string(),
-                "Item 2".to_string(),
-                "Item 3".to_string(),
+                "Tutorials".to_string(),
+                "How-to Guides".to_string(),
+                "Explanation".to_string(),
+                "Reference".to_string(),
             ],
             list_state,
             show_popup: false,
