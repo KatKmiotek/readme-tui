@@ -33,6 +33,13 @@ pub struct Popup {
     selected_button_index: usize,
     buttons: Vec<PopupButton>,
 }
+
+impl Default for Popup {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Popup {
     pub fn new() -> Self {
         Self {
