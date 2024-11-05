@@ -16,8 +16,8 @@ impl PopupButton {
     pub fn label(&self) -> &'static str {
         match self {
             PopupButton::Cancel => "Cancel",
-            PopupButton::ExitWithoutSaving => "Exit without saving",
-            PopupButton::ExitWithSave => "Exit with save",
+            PopupButton::ExitWithoutSaving => "Exit",
+            PopupButton::ExitWithSave => "Save",
         }
     }
     pub fn style(&self) -> Style {
@@ -99,7 +99,7 @@ impl Popup {
         .style(Style::default().fg(Color::White));
 
         frame.render_widget(popup_text, inner_chunks[0]);
-        let button_chunks = Layout::default()
+        let button_spaces = Layout::default()
             .direction(Direction::Horizontal)
             .constraints(
                 [
@@ -118,11 +118,14 @@ impl Popup {
                 button.style()
             };
 
-            let button_text = Paragraph::new(button.label())
-                .style(button_style)
-                .block(Block::default().borders(Borders::ALL));
+            let button_text = Paragraph::new(button.label()).style(button_style).block(
+                Block::default()
+                    .borders(Borders::ALL)
+                    .padding(Padding::new(12, 0, 1, 0))
+                    .title_alignment(Alignment::Center),
+            );
 
-            frame.render_widget(button_text, button_chunks[i]);
+            frame.render_widget(button_text, button_spaces[i]);
         }
     }
 }
@@ -171,7 +174,7 @@ mod tests {
         let exit_with_save = PopupButton::ExitWithSave;
 
         assert_eq!(cancel.label(), "Cancel");
-        assert_eq!(exit_without_saving.label(), "Exit without saving");
-        assert_eq!(exit_with_save.label(), "Exit with save");
+        assert_eq!(exit_without_saving.label(), "Exit");
+        assert_eq!(exit_with_save.label(), "Save");
     }
 }
