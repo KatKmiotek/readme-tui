@@ -12,7 +12,7 @@ pub struct Screen {
     items: Vec<String>,
     list_state: ListState,
     show_popup: bool,
-    enable_insert_mode: bool,
+    pub enable_insert_mode: bool,
 }
 
 impl Default for Screen {
@@ -78,7 +78,7 @@ impl Screen {
             popup.show_popup(frame, area);
         }
         if self.enable_insert_mode {
-            content.enable_editing(content_area);
+            content.enable_editing(frame, content_area);
         }
     }
 

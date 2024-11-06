@@ -23,7 +23,8 @@ impl App {
         let screen = Rc::new(RefCell::new(Screen::new()));
         let popup = Rc::new(RefCell::new(Popup::new()));
         let content = Rc::new(RefCell::new(Content::new()));
-        let event_handler = EventHandler::new(Rc::clone(&screen), Rc::clone(&popup));
+        let event_handler =
+            EventHandler::new(Rc::clone(&screen), Rc::clone(&popup), Rc::clone(&content));
         Self {
             event_handler,
             screen,
