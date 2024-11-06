@@ -35,6 +35,7 @@ impl EventHandler {
                     KeyCode::Char('s') => {
                         self.save_to_file()?;
                     }
+                    KeyCode::Char('i') => self.screen.borrow_mut().enable_insert(),
                     KeyCode::Esc => {
                         self.screen.borrow_mut().toggle_popup();
                     }

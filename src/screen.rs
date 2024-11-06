@@ -5,12 +5,14 @@ use ratatui::{
     Frame,
 };
 
+use crate::content::Content;
 use crate::popup::Popup;
 
 pub struct Screen {
     items: Vec<String>,
     list_state: ListState,
     show_popup: bool,
+    enable_insert_mode: bool,
 }
 
 impl Default for Screen {
@@ -32,9 +34,10 @@ impl Screen {
             ],
             list_state,
             show_popup: false,
+            enable_insert_mode: false,
         }
     }
-    pub fn get_layout(&mut self, frame: &mut Frame, popup: &mut Popup) {
+    pub fn get_layout(&mut self, frame: &mut Frame, popup: &mut Popup, content: &mut Content) {
         let area = frame.area();
         let all = Layout::default()
             .direction(Direction::Vertical)
@@ -74,6 +77,9 @@ impl Screen {
         if self.show_popup {
             popup.show_popup(frame, area);
         }
+        if self.enable_insert_mode {
+            content.enable_editing(content_area);
+        }
     }
 
     pub fn next(&mut self) {
@@ -104,6 +110,9 @@ impl Screen {
     }
     pub fn toggle_popup(&mut self) {
         self.show_popup = !self.show_popup;
+    }
+    pub fn enable_insert(&mut self) {
+        self.enable_insert_mode = !self.enable_insert_mode;
     }
 }
 

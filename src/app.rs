@@ -1,4 +1,4 @@
-use crate::{events::EventHandler, popup::Popup, screen::Screen};
+use crate::{content::Content, events::EventHandler, popup::Popup, screen::Screen};
 use color_eyre::Result;
 use crossterm::{
     event::{DisableMouseCapture, EnableMouseCapture},
@@ -15,17 +15,20 @@ pub struct App {
     event_handler: EventHandler,
     screen: Rc<RefCell<Screen>>,
     popup: Rc<RefCell<Popup>>,
+    content: Rc<RefCell<Content>>,
 }
 
 impl App {
     pub fn new() -> App {
         let screen = Rc::new(RefCell::new(Screen::new()));
         let popup = Rc::new(RefCell::new(Popup::new()));
+        let content = Rc::new(RefCell::new(Content::new()));
         let event_handler = EventHandler::new(Rc::clone(&screen), Rc::clone(&popup));
         Self {
             event_handler,
             screen,
             popup,
+            content,
         }
     }
 
@@ -50,9 +53,11 @@ impl App {
     fn run_app(&mut self, terminal: &mut Terminal<CrosstermBackend<Stdout>>) -> Result<()> {
         loop {
             terminal.draw(|f| {
-                self.screen
-                    .borrow_mut()
-                    .get_layout(f, &mut self.popup.borrow_mut())
+                self.screen.borrow_mut().get_layout(
+                    f,
+                    &mut self.popup.borrow_mut(),
+                    &mut self.content.borrow_mut(),
+                )
             })?;
             self.event_handler.listen_for_keyboard_events()?;
 
