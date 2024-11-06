@@ -10,15 +10,17 @@ on:
 
 jobs:
   create-release:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
           - target: x86_64-pc-windows-msvc
             extension: .exe
+            runner: windows-latest
           - target: x86_64-apple-darwin
             extension: ""
+            runner: macos-latest
 
+    runs-on: ${{ matrix.runner }}      
     steps:
       - uses: actions/checkout@v4
       
@@ -27,11 +29,8 @@ jobs:
         with:
           targets: ${{ matrix.target }}
       
-      - name: Install cross
-        run: cargo install cross
-      
       - name: Build release binary
-        run: cross build --release --target ${{ matrix.target }}
+        run: cargo build --release --target ${{ matrix.target }}
         
       - name: Create release and upload binary
         uses: softprops/action-gh-release@v1
