@@ -10,17 +10,27 @@ on:
 
 jobs:
   create-release:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-pc-windows-msvc
+            extension: .exe
+            runner: windows-latest
+          - target: x86_64-apple-darwin
+            extension: ""
+            runner: macos-latest
+
+    runs-on: ${{ matrix.runner }}      
     steps:
       - uses: actions/checkout@v4
       
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-apple-darwin
+          targets: ${{ matrix.target }}
       
       - name: Build release binary
-        run: cargo build --release --target x86_64-apple-darwin
+        run: cargo build --release --target ${{ matrix.target }}
         
       - name: Create release and upload binary
         uses: softprops/action-gh-release@v1
@@ -28,7 +38,7 @@ jobs:
           tag_name: ${{ github.event.inputs.tag }}
           name: Release ${{ github.event.inputs.tag }}
           files: |
-            target/x86_64-apple-darwin/release/cli-doc
+            target/${{ matrix.target }}/release/cli-doc${{ matrix.extension }}
           draft: false
           prerelease: false
         env:
