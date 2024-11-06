@@ -1,6 +1,6 @@
 use ratatui::{
     layout::{Constraint, Direction, Layout},
-    style::{Color, Style},
+    style::{Color, Style, Stylize},
     widgets::{Block, Borders, List, ListItem, ListState},
     Frame,
 };
@@ -36,10 +36,20 @@ impl Screen {
     }
     pub fn get_layout(&mut self, frame: &mut Frame, popup: &mut Popup) {
         let area = frame.area();
+        let all = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(5), Constraint::Percentage(95)])
+        .split(area);
+        let top_area = all[0];
+        let navbar = Block::new()
+            .title("CLI DOCS ".bold())
+            .title("                                   Use ▲ ▼  to navigate, press ESC to exit");
+        frame.render_widget(navbar, top_area);
+        let main_area = all[1];
         let layout = Layout::default()
             .direction(Direction::Horizontal)
             .constraints([Constraint::Percentage(20), Constraint::Percentage(80)])
-            .split(area);
+            .split(main_area);
         let navigation_menu = layout[0];
         let content_area = layout[1];
 
