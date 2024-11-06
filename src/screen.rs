@@ -37,9 +37,9 @@ impl Screen {
     pub fn get_layout(&mut self, frame: &mut Frame, popup: &mut Popup) {
         let area = frame.area();
         let all = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(5), Constraint::Percentage(95)])
-        .split(area);
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Percentage(5), Constraint::Percentage(95)])
+            .split(area);
         let top_area = all[0];
         let navbar = Block::new()
             .title("CLI DOCS ".bold())
