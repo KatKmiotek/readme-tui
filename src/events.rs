@@ -11,7 +11,6 @@ use crate::popup::{Popup, PopupButton};
 use crate::screen::Screen;
 pub struct EventHandler {
     pub should_quit: bool,
-    pub file_content: Vec<String>,
     screen: Rc<RefCell<Screen>>,
     popup: Rc<RefCell<Popup>>,
     content: Rc<RefCell<Content>>,
@@ -25,7 +24,6 @@ impl EventHandler {
     ) -> Self {
         Self {
             should_quit: false,
-            file_content: Vec::new(),
             screen,
             popup,
             content,
