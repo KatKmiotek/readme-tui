@@ -1,7 +1,7 @@
 use ratatui::{
     layout::{Constraint, Direction, Layout},
     style::{Color, Style, Stylize},
-    widgets::{Block, Borders, List, ListItem, ListState},
+    widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
     Frame,
 };
 
@@ -56,10 +56,12 @@ impl Screen {
         let navigation_menu = layout[0];
         let content_area = layout[1];
 
-        let content_block = Block::new()
-            .borders(Borders::ALL)
-            .title("Press I to enter editing mode")
-            .border_style(Style::default().fg(Color::Red));
+        let content_block = Paragraph::new(content.content_input.as_str()).block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title("Press I to enter editing mode")
+                .border_style(Style::default().fg(Color::Red)),
+        );
         frame.render_widget(content_block, content_area);
 
         let items: Vec<ListItem> = self
