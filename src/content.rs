@@ -51,7 +51,7 @@ impl Content {
             enable_insert_mode: false,
         }
     }
- // refactor should be handled by render
+    // refactor should be handled by render
     pub fn select_topic(&mut self, index: usize) {
         let selected_topic = match index {
             0 => TopicListItem::Tutorials,
@@ -66,7 +66,8 @@ impl Content {
         }
     }
     pub fn render(&mut self, frame: &mut Frame, area: Rect, list_state: &ListState) {
-        if self.enable_insert_mode && self.content_input.is_empty() { // because of 2nd condition after deleting last letter input resets - need something better
+        if self.enable_insert_mode && self.content_input.is_empty() {
+            // because of 2nd condition after deleting last letter input resets - need something better
             if let Some(selected_index) = list_state.selected() {
                 let selected_topic = match selected_index {
                     0 => TopicListItem::Tutorials,
