@@ -79,12 +79,10 @@ impl Screen {
         if self.show_popup {
             popup.show_popup(frame, area);
         }
-        if self.enable_insert_mode {
-            content.enable_editing(frame, content_area);
-        }
+        content.render(frame, content_area, &self.list_state);
     }
 
-    pub fn next(&mut self) {
+    pub fn next(&mut self, content: &mut Content) {
         let i = match self.list_state.selected() {
             Some(i) => {
                 if i >= self.items.len() - 1 {
@@ -96,8 +94,9 @@ impl Screen {
             None => 0,
         };
         self.list_state.select(Some(i));
+        content.select_topic(i)
     }
-    pub fn previous(&mut self) {
+    pub fn previous(&mut self, content: &mut Content) {
         let i = match self.list_state.selected() {
             Some(i) => {
                 if i == 0 {
@@ -109,17 +108,17 @@ impl Screen {
             None => 0,
         };
         self.list_state.select(Some(i));
+        content.select_topic(i)
     }
     pub fn toggle_popup(&mut self) {
         self.show_popup = !self.show_popup;
-    }
-    pub fn enable_insert(&mut self) {
-        self.enable_insert_mode = !self.enable_insert_mode;
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::content::Content;
+
     use super::Screen;
 
     #[test]
@@ -131,31 +130,33 @@ mod tests {
     #[test]
     fn test_next_navigation() {
         let mut screen = Screen::new();
+        let mut content = Content::new();
         assert_eq!(screen.list_state.selected(), Some(0));
 
-        screen.next();
+        screen.next(&mut content);
         assert_eq!(screen.list_state.selected(), Some(1));
 
-        screen.next();
+        screen.next(&mut content);
         assert_eq!(screen.list_state.selected(), Some(2));
 
-        screen.next();
+        screen.next(&mut content);
         assert_eq!(screen.list_state.selected(), Some(3));
 
-        screen.next();
+        screen.next(&mut content);
         assert_eq!(screen.list_state.selected(), Some(0));
     }
 
     #[test]
     fn test_previous_navigation() {
         let mut screen = Screen::new();
+        let mut content = Content::new();
 
         assert_eq!(screen.list_state.selected(), Some(0));
 
-        screen.previous();
+        screen.previous(&mut content);
         assert_eq!(screen.list_state.selected(), Some(screen.items.len() - 1));
 
-        screen.previous();
+        screen.previous(&mut content);
         assert_eq!(screen.list_state.selected(), Some(screen.items.len() - 2));
     }
 
@@ -185,7 +186,8 @@ mod tests {
     #[test]
     fn test_selection_persistence_after_toggle_popup() {
         let mut screen = Screen::new();
-        screen.next();
+        let mut content = Content::new();
+        screen.next(&mut content);
         assert_eq!(screen.list_state.selected(), Some(1));
 
         screen.toggle_popup();
