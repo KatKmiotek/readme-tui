@@ -1,4 +1,5 @@
 mod app;
+pub mod content;
 mod events;
 pub mod popup;
 pub mod screen;
