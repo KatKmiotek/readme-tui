@@ -20,10 +20,11 @@ impl Content {
         }
     }
     pub fn enable_editing(&mut self, frame: &mut Frame, area: Rect) {
-        let place_holder = Paragraph::new("Editing....");
-        frame.render_widget(place_holder, area);
-        let content = Paragraph::new(self.content_input.as_str())
-            .block(Block::default().borders(Borders::ALL).title("Content"));
+        let content = Paragraph::new(self.content_input.as_str()).block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title("Press ESC to exit editor mode."),
+        );
         frame.render_widget(content, area);
     }
 }

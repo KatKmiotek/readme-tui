@@ -58,7 +58,7 @@ impl Screen {
 
         let content_block = Block::new()
             .borders(Borders::ALL)
-            .title("Content")
+            .title("Press I to enter editing mode")
             .border_style(Style::default().fg(Color::Red));
         frame.render_widget(content_block, content_area);
 

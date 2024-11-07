@@ -88,9 +88,9 @@ impl EventHandler {
             KeyCode::Backspace => {
                 self.content.borrow_mut().content_input.pop();
             }
-            // KeyCode::Enter => {
-            //     self.screen.borrow_mut().enable_insert();
-            // }
+            KeyCode::Enter => {
+                self.content.borrow_mut().content_input.push('\n');
+            }
             KeyCode::Esc => {
                 self.screen.borrow_mut().enable_insert();
             }
