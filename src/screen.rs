@@ -94,7 +94,7 @@ impl Screen {
             None => 0,
         };
         self.list_state.select(Some(i));
-        content.select_topic(i)
+        content.select_placeholder(i)
     }
     pub fn previous(&mut self, content: &mut Content) {
         let i = match self.list_state.selected() {
@@ -108,7 +108,7 @@ impl Screen {
             None => 0,
         };
         self.list_state.select(Some(i));
-        content.select_topic(i)
+        content.select_placeholder(i)
     }
     pub fn toggle_popup(&mut self) {
         self.show_popup = !self.show_popup;

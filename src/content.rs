@@ -6,7 +6,7 @@ use ratatui::{
 use std::collections::HashMap;
 
 #[derive(Hash, Eq, PartialEq, Clone, Debug)]
-pub enum TopicListItem {
+pub enum ContentListItem {
     Tutorials,
     Guides,
     Explanation,
@@ -15,7 +15,7 @@ pub enum TopicListItem {
 
 pub struct Content {
     pub content_input: String,
-    topic_content_map: HashMap<TopicListItem, String>,
+    topic_content_map: HashMap<ContentListItem, String>,
     pub enable_insert_mode: bool,
 }
 
@@ -29,19 +29,19 @@ impl Content {
     pub fn new() -> Self {
         let mut topic_content_map = HashMap::new();
         topic_content_map.insert(
-            TopicListItem::Tutorials,
+            ContentListItem::Tutorials,
             "Placeholder content for Tutorials".to_string(),
         );
         topic_content_map.insert(
-            TopicListItem::Guides,
+            ContentListItem::Guides,
             "Placeholder content for Guides".to_string(),
         );
         topic_content_map.insert(
-            TopicListItem::Explanation,
+            ContentListItem::Explanation,
             "Placeholder content for Explanation".to_string(),
         );
         topic_content_map.insert(
-            TopicListItem::Reference,
+            ContentListItem::Reference,
             "Placeholder content for Reference".to_string(),
         );
 
@@ -51,35 +51,31 @@ impl Content {
             enable_insert_mode: false,
         }
     }
-    // refactor should be handled by render
-    pub fn select_topic(&mut self, index: usize) {
-        let selected_topic = match index {
-            0 => TopicListItem::Tutorials,
-            1 => TopicListItem::Guides,
-            2 => TopicListItem::Explanation,
-            3 => TopicListItem::Reference,
-            _ => return,
-        };
 
-        if let Some(content) = self.topic_content_map.get(&selected_topic) {
-            self.content_input = content.clone();
+    fn get_content_for_index(index: usize) -> Option<ContentListItem> {
+        match index {
+            0 => Some(ContentListItem::Tutorials),
+            1 => Some(ContentListItem::Guides),
+            2 => Some(ContentListItem::Explanation),
+            3 => Some(ContentListItem::Reference),
+            _ => None,
         }
     }
-    pub fn render(&mut self, frame: &mut Frame, area: Rect, list_state: &ListState) {
-        if self.enable_insert_mode && self.content_input.is_empty() {
-            // because of 2nd condition after deleting last letter input resets - need something better
-            if let Some(selected_index) = list_state.selected() {
-                let selected_topic = match selected_index {
-                    0 => TopicListItem::Tutorials,
-                    1 => TopicListItem::Guides,
-                    2 => TopicListItem::Explanation,
-                    3 => TopicListItem::Reference,
-                    _ => return,
-                };
 
-                if let Some(content) = self.topic_content_map.get(&selected_topic) {
+    pub fn select_placeholder(&mut self, index: usize) {
+        if let Some(selected_topic) = Content::get_content_for_index(index) {
+            if let Some(content) = self.topic_content_map.get(&selected_topic) {
+                if !self.enable_insert_mode {
                     self.content_input = content.clone();
                 }
+            }
+        }
+    }
+
+    pub fn render(&mut self, frame: &mut Frame, area: Rect, list_state: &ListState) {
+        if !self.enable_insert_mode {
+            if let Some(selected_index) = list_state.selected() {
+                self.select_placeholder(selected_index);
             }
         }
 
@@ -96,6 +92,6 @@ impl Content {
     }
 
     pub fn toggle_insert(&mut self) {
-        self.enable_insert_mode = !self.enable_insert_mode
+        self.enable_insert_mode = !self.enable_insert_mode;
     }
 }
