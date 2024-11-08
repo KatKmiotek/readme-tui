@@ -33,7 +33,7 @@ impl EventHandler {
     pub fn listen_for_keyboard_events(&mut self) -> io::Result<()> {
         if event::poll(Duration::from_millis(250))? {
             if let event::Event::Key(key) = event::read()? {
-                if self.screen.borrow().enable_insert_mode {
+                if self.content.borrow().enable_insert_mode {
                     self.handle_content_input(key)?;
                 } else {
                     self.handle_navigation_input(key)?;
@@ -51,7 +51,7 @@ impl EventHandler {
             KeyCode::Char('s') => {
                 self.save_to_file()?;
             }
-            KeyCode::Char('i') => self.screen.borrow_mut().enable_insert(),
+            KeyCode::Char('i') => self.content.borrow_mut().toggle_insert(),
             KeyCode::Esc => {
                 self.screen.borrow_mut().toggle_popup();
             }
@@ -73,8 +73,14 @@ impl EventHandler {
                     self.should_quit = true;
                 }
             },
-            KeyCode::Down => self.screen.borrow_mut().next(),
-            KeyCode::Up => self.screen.borrow_mut().previous(),
+            KeyCode::Down => self
+                .screen
+                .borrow_mut()
+                .next(&mut self.content.borrow_mut()),
+            KeyCode::Up => self
+                .screen
+                .borrow_mut()
+                .previous(&mut self.content.borrow_mut()),
             _ => {}
         }
         Ok(())
@@ -92,7 +98,7 @@ impl EventHandler {
                 self.content.borrow_mut().content_input.push('\n');
             }
             KeyCode::Esc => {
-                self.screen.borrow_mut().enable_insert();
+                self.content.borrow_mut().toggle_insert();
             }
             _ => {}
         }
