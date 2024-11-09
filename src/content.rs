@@ -86,10 +86,8 @@ impl Content {
             if let Some(selected_index) = list_state.selected() {
                 self.select_placeholder(selected_index);
             }
-        } else {
-            if let Some(selected_index) = list_state.selected() {
-                self.save_content_for_current_topic(selected_index);
-            }
+        } else if let Some(selected_index) = list_state.selected() {
+            self.save_content_for_current_topic(selected_index);
         }
 
         let title = if self.enable_insert_mode {
