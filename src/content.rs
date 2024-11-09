@@ -1,5 +1,5 @@
 use ratatui::{
-    layout::Rect,
+    layout::{Position, Rect},
     widgets::{Block, Borders, ListState, Paragraph},
     Frame,
 };
@@ -18,6 +18,8 @@ pub struct Content {
     topic_content_map: HashMap<ContentListItem, String>,
     pub enable_insert_mode: bool,
     pub file_to_save: HashMap<ContentListItem, String>,
+    pub cursor_index_x: usize,
+    pub cursor_index_y: usize,
 }
 
 impl Default for Content {
@@ -51,6 +53,8 @@ impl Content {
             topic_content_map,
             enable_insert_mode: false,
             file_to_save: HashMap::new(),
+            cursor_index_x: 0,
+            cursor_index_y: 0,
         }
     }
 
@@ -98,6 +102,12 @@ impl Content {
         } else {
             "Press I to enter editing mode"
         };
+        if self.enable_insert_mode {
+            frame.set_cursor_position(Position::new(
+                area.x + self.cursor_index_x as u16 + 1,
+                area.y + self.cursor_index_y as u16 + 1,
+            ));
+        }
 
         let content_paragraph = Paragraph::new(self.content_input.as_str())
             .block(Block::default().borders(Borders::ALL).title(title));
@@ -106,5 +116,6 @@ impl Content {
     }
     pub fn toggle_insert(&mut self) {
         self.enable_insert_mode = !self.enable_insert_mode;
+        self.cursor_index_x = self.content_input.len();
     }
 }

@@ -87,18 +87,47 @@ impl EventHandler {
     }
 
     fn handle_content_input(&mut self, key: KeyEvent) -> io::Result<()> {
+        let mut content = self.content.borrow_mut();
+
         match key.code {
             KeyCode::Char(c) => {
-                self.content.borrow_mut().content_input.push(c);
+                content.content_input.push(c);
+                content.cursor_index_x += 1;
             }
             KeyCode::Backspace => {
-                self.content.borrow_mut().content_input.pop();
+                if content.cursor_index_x > 0 {
+                    content.content_input.pop();
+                    content.cursor_index_x -= 1;
+                }
             }
             KeyCode::Enter => {
-                self.content.borrow_mut().content_input.push('\n');
+                content.content_input.push('\n');
+                content.cursor_index_y += 1;
+                content.cursor_index_x = 0;
             }
             KeyCode::Esc => {
-                self.content.borrow_mut().toggle_insert();
+                content.toggle_insert();
+            }
+            KeyCode::Left => {
+                if content.cursor_index_x > 0 {
+                    content.cursor_index_x -= 1;
+                }
+            }
+            KeyCode::Right => {
+                if content.cursor_index_x < content.content_input.len() {
+                    content.cursor_index_x += 1;
+                }
+            }
+            KeyCode::Up => {
+                if content.cursor_index_y > 0 {
+                    content.cursor_index_y -= 1;
+                }
+            }
+            KeyCode::Down => {
+                content.cursor_index_y += 1;
+            }
+            KeyCode::Tab => {
+                content.cursor_index_x += 4;
             }
             _ => {}
         }
