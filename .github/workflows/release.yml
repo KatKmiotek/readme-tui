@@ -20,18 +20,18 @@ jobs:
             extension: ""
             runner: macos-latest
 
-    runs-on: ${{ matrix.runner }}      
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
-      
+
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
-        
+
       - name: Create release and upload binary
         uses: softprops/action-gh-release@v1
         with:

@@ -6,5 +6,3 @@ Cli Docs is Terminal User Interface app that aims to enable user to write projec
 ### Goals
 ### Understanding
 ### Information
-
-
