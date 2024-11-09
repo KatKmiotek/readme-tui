@@ -17,7 +17,7 @@ jobs:
             extension: .exe
             runner: windows-latest
           - target: x86_64-apple-darwin
-            extension: ""
+            extension: .zip
             runner: macos-latest
 
     runs-on: ${{ matrix.runner }}
@@ -31,6 +31,13 @@ jobs:
 
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Set up Zip File
+        if: ${{ matrix.runner == 'macos-latest'}}
+        run: |
+          cd target/${{ matrix.target }}/release
+          zip -j cli-doc${{ matrix.extension }} cli-doc
+
 
       - name: Create release and upload binary
         uses: softprops/action-gh-release@v1
