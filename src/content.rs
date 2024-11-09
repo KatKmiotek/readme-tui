@@ -78,6 +78,9 @@ impl Content {
         if let Some(selected_topic) = Content::get_content_for_index(index) {
             self.file_to_save
                 .insert(selected_topic.clone(), self.content_input.clone());
+            if let Some(content) = self.topic_content_map.get_mut(&selected_topic) {
+                *content = self.content_input.clone();
+            }
         }
     }
 
