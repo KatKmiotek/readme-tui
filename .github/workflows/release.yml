@@ -35,7 +35,8 @@ jobs:
       - name: Set up Zip File
         if: ${{ matrix.runner == 'macos-latest'}}
         run: |
-          zip -r target/${{ matrix.target }}/release/cli-doc${{ matrix.extension }} target/${{ matrix.target }}/release/cli-doc
+          cd target/${{ matrix.target }}/release
+          zip -j cli-doc${{ matrix.extension }} cli-doc
 
 
       - name: Create release and upload binary
