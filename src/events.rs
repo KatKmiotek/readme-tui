@@ -113,7 +113,10 @@ impl EventHandler {
             fs::create_dir_all(dir_path)?;
         }
         let mut file = File::create(file_path)?;
-        writeln!(file, "{}", self.content.borrow().content_input.as_str())?;
+        let content = self.content.borrow();
+        for section in content.file_to_save.iter() {
+            writeln!(file, "##\n{}", section.1)?;
+        }
 
         println!("Your input has been saved to output/README.md");
         Ok(())
