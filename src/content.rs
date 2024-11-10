@@ -1,9 +1,14 @@
+use color_eyre::eyre::{Error, Ok};
 use ratatui::{
     layout::{Position, Rect},
     widgets::{Block, Borders, ListState, Paragraph},
     Frame,
 };
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    fs::{self},
+    path::Path,
+};
 
 #[derive(Hash, Eq, PartialEq, Clone, Debug)]
 pub enum ContentListItem {
@@ -31,22 +36,10 @@ impl Default for Content {
 impl Content {
     pub fn new() -> Self {
         let mut topic_content_map = HashMap::new();
-        topic_content_map.insert(
-            ContentListItem::Tutorials,
-            "Placeholder content for Tutorials".to_string(),
-        );
-        topic_content_map.insert(
-            ContentListItem::Guides,
-            "Placeholder content for Guides".to_string(),
-        );
-        topic_content_map.insert(
-            ContentListItem::Explanation,
-            "Placeholder content for Explanation".to_string(),
-        );
-        topic_content_map.insert(
-            ContentListItem::Reference,
-            "Placeholder content for Reference".to_string(),
-        );
+        topic_content_map.insert(ContentListItem::Tutorials, "tutorials.md".to_string());
+        topic_content_map.insert(ContentListItem::Guides, "guides.md".to_string());
+        topic_content_map.insert(ContentListItem::Explanation, "explanation.md".to_string());
+        topic_content_map.insert(ContentListItem::Reference, "reference.md".to_string());
 
         Self {
             content_input: String::new(),
@@ -72,10 +65,19 @@ impl Content {
         if let Some(selected_topic) = Content::get_content_for_index(index) {
             if let Some(content) = self.topic_content_map.get(&selected_topic) {
                 if !self.enable_insert_mode {
-                    self.content_input = content.clone();
+                    // self.content_input = content.clone();
+                    self.content_input =
+                        Content::read_placeholder_from_file(content).unwrap_or("empty".to_string())
                 }
             }
         }
+    }
+
+    pub fn read_placeholder_from_file(file: &str) -> Result<String, Error> {
+        let dir_path = Path::new("templates");
+        let file_path = dir_path.join(file);
+        let data = fs::read_to_string(file_path).expect("Unable to read file");
+        Ok(data)
     }
 
     pub fn save_content_for_current_topic(&mut self, index: usize) {
