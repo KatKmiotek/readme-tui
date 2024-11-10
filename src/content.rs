@@ -117,13 +117,8 @@ impl Content {
 
     pub fn toggle_insert(&mut self) {
         self.enable_insert_mode = !self.enable_insert_mode;
-        if !self.enable_insert_mode {
-            self.cursor_index_x = 0;
-            self.cursor_index_y = 0;
-        } else if let Some(last_line) = self.content_input.last() {
-            self.cursor_index_y = self.content_input.len() - 1;
-            self.cursor_index_x = last_line.len();
-        }
+        self.cursor_index_y = 0;
+        self.cursor_index_x = 0;
     }
 
     pub fn insert_char(&mut self, ch: char) {
