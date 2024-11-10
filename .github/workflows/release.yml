@@ -32,7 +32,7 @@ jobs:
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
 
-      - name: Set up Zip File
+      - name: Zip file
         if: ${{ matrix.runner == 'macos-latest'}}
         run: |
           cd target/${{ matrix.target }}/release
