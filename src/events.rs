@@ -35,6 +35,8 @@ impl EventHandler {
             if let event::Event::Key(key) = event::read()? {
                 if self.content.borrow().enable_insert_mode {
                     self.handle_content_input(key)?;
+                } else if self.screen.borrow().show_popup {
+                    self.handle_popup_events(key)?
                 } else {
                     self.handle_navigation_input(key)?;
                 }
@@ -52,6 +54,40 @@ impl EventHandler {
                 self.save_to_file()?;
             }
             KeyCode::Char('i') => self.content.borrow_mut().toggle_insert(),
+            KeyCode::Esc => {
+                self.screen.borrow_mut().toggle_popup();
+            }
+            KeyCode::Down => self
+                .screen
+                .borrow_mut()
+                .next(&mut self.content.borrow_mut()),
+            KeyCode::Up => self
+                .screen
+                .borrow_mut()
+                .previous(&mut self.content.borrow_mut()),
+            _ => {}
+        }
+        Ok(())
+    }
+
+    fn handle_content_input(&mut self, key: KeyEvent) -> io::Result<()> {
+        let mut content = self.content.borrow_mut();
+        match key.code {
+            KeyCode::Char(c) => content.insert_char(c),
+            KeyCode::Enter => content.handle_enter(),
+            KeyCode::Esc => content.toggle_insert(),
+            KeyCode::Backspace => content.delete_char(),
+            KeyCode::Left => content.move_cursor_left(),
+            KeyCode::Right => content.move_cursor_right(),
+            KeyCode::Up => content.move_cursor_up(),
+            KeyCode::Down => content.move_cursor_down(),
+            _ => {}
+        }
+        Ok(())
+    }
+
+    fn handle_popup_events(&mut self, key: KeyEvent) -> io::Result<()> {
+        match key.code {
             KeyCode::Esc => {
                 self.screen.borrow_mut().toggle_popup();
             }
@@ -73,78 +109,6 @@ impl EventHandler {
                     self.should_quit = true;
                 }
             },
-            KeyCode::Down => self
-                .screen
-                .borrow_mut()
-                .next(&mut self.content.borrow_mut()),
-            KeyCode::Up => self
-                .screen
-                .borrow_mut()
-                .previous(&mut self.content.borrow_mut()),
-            _ => {}
-        }
-        Ok(())
-    }
-
-    fn handle_content_input(&mut self, key: KeyEvent) -> io::Result<()> {
-        let mut content = self.content.borrow_mut();
-        match key.code {
-            KeyCode::Char(c) => {
-                let cursor_x = content.cursor_index_x;
-                let cursor_y = content.cursor_index_y;
-
-                if cursor_y >= content.content_input.len() {
-                    content.content_input.push(String::new());
-                }
-
-                if let Some(line) = content.content_input.get_mut(cursor_y) {
-                    line.insert(cursor_x, c);
-                    content.cursor_index_x += 1;
-                }
-            }
-            KeyCode::Backspace => {
-                if !content.content_input.is_empty() {
-                    content.content_input.pop();
-                    if content.cursor_index_x > 0 {
-                        content.cursor_index_x -= 1;
-                    }
-                }
-            }
-            KeyCode::Enter => {
-                let y = content.cursor_index_y;
-                let current_line = content.content_input[y].clone();
-                let (before_cursor, after_cursor) = current_line.split_at(content.cursor_index_x);
-
-                content.content_input[y] = before_cursor.to_string();
-
-                content
-                    .content_input
-                    .insert(y + 1, after_cursor.to_string());
-
-                content.cursor_index_y += 1;
-                content.cursor_index_x = 0;
-            }
-            KeyCode::Esc => {
-                content.toggle_insert();
-            }
-            KeyCode::Left => {
-                if content.cursor_index_x > 0 {
-                    content.cursor_index_x -= 1;
-                }
-            }
-            KeyCode::Right => {
-                if content.cursor_index_x < content.content_input.len() {
-                    content.cursor_index_x += 1;
-                }
-            }
-            KeyCode::Up => {
-                if content.cursor_index_y > 0 {
-                    content.cursor_index_y -= 1;
-                }
-            }
-            KeyCode::Down => {
-                content.cursor_index_y += 1;
-            }
             _ => {}
         }
         Ok(())

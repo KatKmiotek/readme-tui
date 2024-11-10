@@ -121,6 +121,63 @@ impl Content {
         self.cursor_index_x = 0;
     }
 
+    pub fn delete_char(&mut self) {
+        if self.cursor_index_y < self.content_input.len() {
+            let line = &mut self.content_input[self.cursor_index_y];
+
+            if self.cursor_index_x > 0 {
+                line.remove(self.cursor_index_x - 1);
+                self.cursor_index_x -= 1;
+            } else if self.cursor_index_y > 0 {
+                let current_line = self.content_input.remove(self.cursor_index_y);
+                self.cursor_index_y -= 1;
+                if let Some(previous_line) = self.content_input.get_mut(self.cursor_index_y) {
+                    self.cursor_index_x = previous_line.len();
+                    previous_line.push_str(&current_line);
+                }
+            }
+        }
+    }
+
+    pub fn move_cursor_left(&mut self) {
+        if self.cursor_index_x > 0 {
+            self.cursor_index_x -= 1;
+        } else if self.cursor_index_y > 0 {
+            self.cursor_index_y -= 1;
+            if let Some(line) = self.content_input.get(self.cursor_index_y) {
+                self.cursor_index_x = line.len();
+            }
+        }
+    }
+
+    pub fn move_cursor_right(&mut self) {
+        if self.cursor_index_y < self.content_input.len() {
+            let current_line_length = self.content_input[self.cursor_index_y].len();
+            if self.cursor_index_x < current_line_length {
+                self.cursor_index_x += 1;
+            } else if self.cursor_index_y + 1 < self.content_input.len() {
+                self.cursor_index_y += 1;
+                self.cursor_index_x = 0;
+            }
+        }
+    }
+
+    pub fn move_cursor_up(&mut self) {
+        if self.cursor_index_y > 0 {
+            self.cursor_index_y -= 1;
+            let line_length = self.content_input[self.cursor_index_y].len();
+            self.cursor_index_x = self.cursor_index_x.min(line_length);
+        }
+    }
+
+    pub fn move_cursor_down(&mut self) {
+        if self.cursor_index_y + 1 < self.content_input.len() {
+            self.cursor_index_y += 1;
+            let line_length = self.content_input[self.cursor_index_y].len();
+            self.cursor_index_x = self.cursor_index_x.min(line_length);
+        }
+    }
+
     pub fn insert_char(&mut self, ch: char) {
         if self.cursor_index_y >= self.content_input.len() {
             self.content_input.push(String::new());
@@ -131,12 +188,21 @@ impl Content {
         }
     }
 
-    pub fn delete_char(&mut self) {
-        if let Some(line) = self.content_input.get_mut(self.cursor_index_y) {
-            if self.cursor_index_x > 0 {
-                line.remove(self.cursor_index_x - 1);
-                self.cursor_index_x -= 1;
-            }
+    pub fn handle_enter(&mut self) {
+        if self.cursor_index_y >= self.content_input.len() {
+            self.content_input.push(String::new());
+            self.cursor_index_y += 1;
+            self.cursor_index_x = 0;
+            return;
         }
+        let current_line = self.content_input[self.cursor_index_y].clone();
+        let (before_cursor, after_cursor) = current_line.split_at(self.cursor_index_x);
+
+        self.content_input[self.cursor_index_y] = before_cursor.to_string();
+        self.content_input
+            .insert(self.cursor_index_y + 1, after_cursor.to_string());
+
+        self.cursor_index_y += 1;
+        self.cursor_index_x = 0;
     }
 }

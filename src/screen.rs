@@ -11,7 +11,7 @@ use crate::popup::Popup;
 pub struct Screen {
     items: Vec<String>,
     list_state: ListState,
-    show_popup: bool,
+    pub show_popup: bool,
     pub enable_insert_mode: bool,
 }
 
