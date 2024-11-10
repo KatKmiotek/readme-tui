@@ -1,14 +1,10 @@
-use color_eyre::eyre::{Error, Ok};
+use color_eyre::eyre::Result;
 use ratatui::{
     layout::{Position, Rect},
     widgets::{Block, Borders, ListState, Paragraph},
     Frame,
 };
-use std::{
-    collections::HashMap,
-    fs::{self},
-    path::Path,
-};
+use std::{collections::HashMap, fs, path::Path};
 
 #[derive(Hash, Eq, PartialEq, Clone, Debug)]
 pub enum ContentListItem {
@@ -19,10 +15,10 @@ pub enum ContentListItem {
 }
 
 pub struct Content {
-    pub content_input: String,
+    pub content_input: Vec<String>,
     topic_content_map: HashMap<ContentListItem, String>,
     pub enable_insert_mode: bool,
-    pub file_to_save: HashMap<ContentListItem, String>,
+    pub file_to_save: HashMap<ContentListItem, Vec<String>>,
     pub cursor_index_x: usize,
     pub cursor_index_y: usize,
 }
@@ -42,7 +38,7 @@ impl Content {
         topic_content_map.insert(ContentListItem::Reference, "reference.md".to_string());
 
         Self {
-            content_input: String::new(),
+            content_input: Vec::new(),
             topic_content_map,
             enable_insert_mode: false,
             file_to_save: HashMap::new(),
@@ -65,19 +61,19 @@ impl Content {
         if let Some(selected_topic) = Content::get_content_for_index(index) {
             if let Some(content) = self.topic_content_map.get(&selected_topic) {
                 if !self.enable_insert_mode {
-                    // self.content_input = content.clone();
-                    self.content_input =
-                        Content::read_placeholder_from_file(content).unwrap_or("empty".to_string())
+                    self.content_input = Content::read_placeholder_from_file(content)
+                        .unwrap_or_else(|_| vec!["empty".to_string()]);
                 }
             }
         }
     }
 
-    pub fn read_placeholder_from_file(file: &str) -> Result<String, Error> {
+    pub fn read_placeholder_from_file(file: &str) -> Result<Vec<String>> {
         let dir_path = Path::new("templates");
         let file_path = dir_path.join(file);
         let data = fs::read_to_string(file_path).expect("Unable to read file");
-        Ok(data)
+        let lines: Vec<String> = data.lines().map(|line| line.to_string()).collect();
+        Ok(lines)
     }
 
     pub fn save_content_for_current_topic(&mut self, index: usize) {
@@ -85,7 +81,7 @@ impl Content {
             self.file_to_save
                 .insert(selected_topic.clone(), self.content_input.clone());
             if let Some(content) = self.topic_content_map.get_mut(&selected_topic) {
-                *content = self.content_input.clone();
+                *content = content.clone();
             }
         }
     }
@@ -104,20 +100,48 @@ impl Content {
         } else {
             "Press I to enter editing mode"
         };
-        if self.enable_insert_mode {
+
+        if self.enable_insert_mode && self.cursor_index_y < self.content_input.len() {
             frame.set_cursor_position(Position::new(
                 area.x + self.cursor_index_x as u16 + 1,
                 area.y + self.cursor_index_y as u16 + 1,
             ));
         }
 
-        let content_paragraph = Paragraph::new(self.content_input.as_str())
+        let content_str = self.content_input.join("\n");
+        let content_paragraph = Paragraph::new(content_str.as_str())
             .block(Block::default().borders(Borders::ALL).title(title));
 
         frame.render_widget(content_paragraph, area);
     }
+
     pub fn toggle_insert(&mut self) {
         self.enable_insert_mode = !self.enable_insert_mode;
-        self.cursor_index_x = self.content_input.len();
+        if !self.enable_insert_mode {
+            self.cursor_index_x = 0;
+            self.cursor_index_y = 0;
+        } else if let Some(last_line) = self.content_input.last() {
+            self.cursor_index_y = self.content_input.len() - 1;
+            self.cursor_index_x = last_line.len();
+        }
+    }
+
+    pub fn insert_char(&mut self, ch: char) {
+        if self.cursor_index_y >= self.content_input.len() {
+            self.content_input.push(String::new());
+        }
+        if let Some(line) = self.content_input.get_mut(self.cursor_index_y) {
+            line.insert(self.cursor_index_x, ch);
+            self.cursor_index_x += 1;
+        }
+    }
+
+    pub fn delete_char(&mut self) {
+        if let Some(line) = self.content_input.get_mut(self.cursor_index_y) {
+            if self.cursor_index_x > 0 {
+                line.remove(self.cursor_index_x - 1);
+                self.cursor_index_x -= 1;
+            }
+        }
     }
 }

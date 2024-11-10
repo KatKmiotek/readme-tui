@@ -88,20 +88,39 @@ impl EventHandler {
 
     fn handle_content_input(&mut self, key: KeyEvent) -> io::Result<()> {
         let mut content = self.content.borrow_mut();
-
         match key.code {
             KeyCode::Char(c) => {
-                content.content_input.push(c);
-                content.cursor_index_x += 1;
+                let cursor_x = content.cursor_index_x;
+                let cursor_y = content.cursor_index_y;
+
+                if cursor_y >= content.content_input.len() {
+                    content.content_input.push(String::new());
+                }
+
+                if let Some(line) = content.content_input.get_mut(cursor_y) {
+                    line.insert(cursor_x, c);
+                    content.cursor_index_x += 1;
+                }
             }
             KeyCode::Backspace => {
-                if content.cursor_index_x > 0 {
+                if !content.content_input.is_empty() {
                     content.content_input.pop();
-                    content.cursor_index_x -= 1;
+                    if content.cursor_index_x > 0 {
+                        content.cursor_index_x -= 1;
+                    }
                 }
             }
             KeyCode::Enter => {
-                content.content_input.push('\n');
+                let y = content.cursor_index_y;
+                let current_line = content.content_input[y].clone();
+                let (before_cursor, after_cursor) = current_line.split_at(content.cursor_index_x);
+
+                content.content_input[y] = before_cursor.to_string();
+
+                content
+                    .content_input
+                    .insert(y + 1, after_cursor.to_string());
+
                 content.cursor_index_y += 1;
                 content.cursor_index_x = 0;
             }
@@ -126,9 +145,6 @@ impl EventHandler {
             KeyCode::Down => {
                 content.cursor_index_y += 1;
             }
-            KeyCode::Tab => {
-                content.cursor_index_x += 4;
-            }
             _ => {}
         }
         Ok(())
@@ -143,8 +159,14 @@ impl EventHandler {
         }
         let mut file = File::create(file_path)?;
         let content = self.content.borrow();
-        for section in content.file_to_save.iter() {
-            writeln!(file, "##\n{}", section.1)?;
+        for (section, lines) in &content.file_to_save {
+            writeln!(file, "## {:?}", section)?;
+
+            for line in lines {
+                writeln!(file, "{}", line)?;
+            }
+
+            writeln!(file)?;
         }
 
         println!("Your input has been saved to output/README.md");

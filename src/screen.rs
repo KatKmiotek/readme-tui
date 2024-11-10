@@ -56,7 +56,8 @@ impl Screen {
         let navigation_menu = layout[0];
         let content_area = layout[1];
 
-        let content_block = Paragraph::new(content.content_input.as_str()).block(
+        let content_text = content.content_input.join("\n"); // Join the lines into a single string
+        let content_block = Paragraph::new(content_text.as_str()).block(
             Block::default()
                 .borders(Borders::ALL)
                 .title("Press I to enter editing mode")
