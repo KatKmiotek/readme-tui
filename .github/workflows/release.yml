@@ -1,14 +1,26 @@
 name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Release tag
-        required: true
-        type: string
+  push:
+    branches: [ main ]
 
 jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get release version
+        id: get-version
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          version_format: "${major}.${minor}.${patch}"
+
   create-release:
     strategy:
       matrix:
@@ -21,6 +33,7 @@ jobs:
             runner: macos-latest
 
     runs-on: ${{ matrix.runner }}
+    needs: [get-version]
     steps:
       - uses: actions/checkout@v4
 
@@ -42,8 +55,8 @@ jobs:
       - name: Create release and upload binary
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.event.inputs.tag }}
-          name: Release ${{ github.event.inputs.tag }}
+          tag_name: ${{ needs.get-version.outputs.version_tag }}
+          name: Release ${{ needs.get-version.outputs.version_tag }}
           files: |
             target/${{ matrix.target }}/release/cli-doc${{ matrix.extension }}
           draft: false
