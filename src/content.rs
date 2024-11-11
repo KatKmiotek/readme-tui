@@ -59,7 +59,9 @@ impl Content {
 
     pub fn select_placeholder(&mut self, index: usize) {
         if let Some(selected_topic) = Content::get_content_for_index(index) {
-            if let Some(content) = self.topic_content_map.get(&selected_topic) {
+            if let Some(saved_content) = self.file_to_save.get(&selected_topic) {
+                self.content_input = saved_content.clone();
+            } else if let Some(content) = self.topic_content_map.get(&selected_topic) {
                 if !self.enable_insert_mode {
                     self.content_input = Content::read_placeholder_from_file(content)
                         .unwrap_or_else(|_| vec!["empty".to_string()]);
