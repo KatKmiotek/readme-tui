@@ -3,10 +3,14 @@ name: Release
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   get-version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      version_tag: ${{ steps.get-version.outputs.version_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
