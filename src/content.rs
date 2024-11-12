@@ -1,7 +1,9 @@
 use color_eyre::eyre::Result;
 use ratatui::{
     layout::{Position, Rect},
-    widgets::{Block, Borders, ListState, Paragraph},
+    widgets::{
+        Block, Borders, ListState, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState,
+    },
     Frame,
 };
 use std::{collections::HashMap, fs, path::Path};
@@ -21,6 +23,9 @@ pub struct Content {
     pub file_to_save: HashMap<ContentListItem, Vec<String>>,
     pub cursor_index_x: usize,
     pub cursor_index_y: usize,
+    pub vertical_scroll_state: ScrollbarState,
+    pub viewport_height: usize,
+    pub scroll_offset: usize,
 }
 
 impl Default for Content {
@@ -44,6 +49,9 @@ impl Content {
             file_to_save: HashMap::new(),
             cursor_index_x: 0,
             cursor_index_y: 0,
+            vertical_scroll_state: ScrollbarState::new(20),
+            viewport_height: 10,
+            scroll_offset: 0,
         }
     }
 
@@ -65,6 +73,7 @@ impl Content {
                 if !self.enable_insert_mode {
                     self.content_input = Content::read_placeholder_from_file(content)
                         .unwrap_or_else(|_| vec!["empty".to_string()]);
+                    self.viewport_height = self.content_input.len()
                 }
             }
         }
@@ -89,6 +98,7 @@ impl Content {
     }
 
     pub fn render(&mut self, frame: &mut Frame, area: Rect, list_state: &ListState) {
+        self.viewport_height = area.height as usize - 2;
         if !self.enable_insert_mode {
             if let Some(selected_index) = list_state.selected() {
                 self.select_placeholder(selected_index);
@@ -106,15 +116,33 @@ impl Content {
         if self.enable_insert_mode && self.cursor_index_y < self.content_input.len() {
             frame.set_cursor_position(Position::new(
                 area.x + self.cursor_index_x as u16 + 1,
-                area.y + self.cursor_index_y as u16 + 1,
+                area.y + (self.cursor_index_y - self.scroll_offset) as u16 + 1,
             ));
         }
 
-        let content_str = self.content_input.join("\n");
+        let visible_lines: Vec<String> = self
+            .content_input
+            .iter()
+            .skip(self.scroll_offset)
+            .take(self.viewport_height)
+            .cloned()
+            .collect();
+        let content_str = visible_lines.join("\n");
+
         let content_paragraph = Paragraph::new(content_str.as_str())
             .block(Block::default().borders(Borders::ALL).title(title));
 
         frame.render_widget(content_paragraph, area);
+
+        self.vertical_scroll_state = ScrollbarState::new(self.content_input.len());
+
+        frame.render_stateful_widget(
+            Scrollbar::new(ScrollbarOrientation::VerticalRight)
+                .begin_symbol(Some("↑"))
+                .end_symbol(Some("↓")),
+            area,
+            &mut self.vertical_scroll_state,
+        );
     }
 
     pub fn toggle_insert(&mut self) {
@@ -169,6 +197,10 @@ impl Content {
             self.cursor_index_y -= 1;
             let line_length = self.content_input[self.cursor_index_y].len();
             self.cursor_index_x = self.cursor_index_x.min(line_length);
+
+            if self.cursor_index_y < self.scroll_offset {
+                self.scroll_offset = self.cursor_index_y;
+            }
         }
     }
 
@@ -177,6 +209,10 @@ impl Content {
             self.cursor_index_y += 1;
             let line_length = self.content_input[self.cursor_index_y].len();
             self.cursor_index_x = self.cursor_index_x.min(line_length);
+
+            if self.cursor_index_y >= self.scroll_offset + self.viewport_height {
+                self.scroll_offset = self.cursor_index_y - self.viewport_height + 1;
+            }
         }
     }
 
