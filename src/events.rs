@@ -81,8 +81,8 @@ impl EventHandler {
             KeyCode::Right => content.move_cursor_right(),
             KeyCode::Up => content.move_cursor_up(),
             KeyCode::Down => content.move_cursor_down(),
-            KeyCode::F(1) => content.scroll_to_bottom(),
-            KeyCode::F(2) => content.scroll_to_top(),
+            KeyCode::F(1) => content.scroll_to_top(),
+            KeyCode::F(2) => content.scroll_to_bottom(),
             _ => {}
         }
         Ok(())

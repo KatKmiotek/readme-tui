@@ -46,7 +46,7 @@ impl Screen {
         let top_area = all[0];
         let navbar = Block::new().title("CLI DOCS ".bold());
         let additional_instruction = if content.enable_insert_mode {
-            "                      Use ◄ ▲ ▼ ► to navigate, F1 - scroll to top, F2 - scroll to bottom, press ESC to exit"
+            "                      Use ◄ ▲ ▼ ► to navigate, F1 - page up, F2 - page down, press ESC to exit"
         } else {
             "                      Use ▲ ▼  to navigate, press i to edit, press ESC to exit"
         };
