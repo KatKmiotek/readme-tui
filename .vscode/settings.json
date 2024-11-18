@@ -4,6 +4,7 @@
     "crossterm",
     "Diátaxis",
     "ratatui",
+    "rustup",
     "txtui"
   ]
 }

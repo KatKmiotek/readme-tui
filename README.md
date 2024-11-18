@@ -34,7 +34,7 @@ Tutorials:
 By following those steps you will setup your machine to run CLI Docs tool
 
 Steps:
-1. **Step 1**: Mac - Install rustup via running `curl https://sh.rustup.rs -sSf | sh`
+1. **Step 1**: Mac - Install rustup via [instruction](https://doc.rust-lang.org/cargo/getting-started/) from The Rust book
 2. **Step 2**: Windows - Install rustup via [instruction](https://doc.rust-lang.org/cargo/getting-started/installation.html) from The Rust book
 3. **Step 3**: Confirm `cargo -V` outputs version 1.82.0 or higher
 4. **Step 4**: Run `cargo run` - this will build project
@@ -59,14 +59,14 @@ Steps:
 #### Guide 1: Installing release executable
 
 Steps:
-1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/readme-tui/main/install.sh | sh`
+1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/txtui/main/install.sh | sh`
 2. **Verify**: verify installation by running `txtui -v`
 3. **Execute**: now, you can use `txtui` to run application
 
 #### Guide 2: Downloading selected release
 
 Steps:
-1. **Step 1**: In the github repository page go to [release section](https://github.com/KatKmiotek/readme-tui/releases)
+1. **Step 1**: In the github repository page go to [release section](https://github.com/KatKmiotek/txtui/releases)
 2. **Step 2**: Select most recent release and from within attached files package for Windows (ending .exe) or zipped package for Mac
 3. **Step 3**: Mac - after download open in Finder > right-click Open with > Select your terminal + accept the source. Then you can run it in terminal `./txtui`
 4. **Step 4**: Windows - run in Powershell `\txtui.exe`
@@ -97,6 +97,7 @@ The project is TUI (terminal User Interface) written in Rust in [Ratatui](https:
 ### Deployment pipeline
 1. **Pull Request**: on pull request event there will be number of checks performed that include pre-commit hooks and tests
 2. **Merge to main**: will trigger building project into Windows and Mac binaries that are uploaded as part of tagged release
+3. **Merge to main**: will also tag repository and update Cargo.toml version
 
 ### Static code analysis
 Static Code Analysis runs `cargo fmt` and `clippy` commands.

@@ -3,7 +3,7 @@
 set -e
 
 OWNER="KatKmiotek"
-REPO="readme-tui"
+REPO="txtui"
 BINARY_NAME="txtui"
 INSTALL_DIR="/usr/local/bin"
 
