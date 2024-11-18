@@ -12,6 +12,8 @@ Cli Docs is Terminal User Interface app that aims to enable user to write projec
   - [How-To Guides](#how-to-guides)
     - [Guide 1: Installing release executable](#guide-1-installing-release-executable)
     - [Steps](#steps-2)
+    - [Guide 2: Downloading selected release](#guide-2-downloading-selected-release)
+    - [Steps](#steps-3)
 - [3. Reference](#3-reference)
   - [About idea](#about-idea)
 - [4. Explanation](#4-explanation)
@@ -54,15 +56,21 @@ Execute static code analysis locally
 
 ### How-To Guides
 1. **[Guide 1: Installing release executable](#guide-1-installing-release-executable)**
+2. **[Guide 2: Downloading selected release](#guide-2-downloading-selected-release)**
 
 #### Guide 1: Installing release executable
+
+#### Steps
+1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/readme-tui/main/install.sh | sh`
+2. **Step for Windows**: run `iwr -useb https://raw.githubusercontent.com/KatKmiotek/readme-tui/main/install.ps1 | iex`
+
+#### Guide 2: Downloading selected release
 
 #### Steps
 1. **Step 1**: In the github repository page go to [release section](https://github.com/KatKmiotek/readme-tui/releases)
 2. **Step 2**: Select most recent release and from within attached files package for Windows (ending .exe) or zipped package for Mac
 3. **Step 3**: Mac - after download open in Finder > right-click Open with > Select your terminal + accept the source. Then you can run it in terminal `./cli-doc`
 4. **Step 4**: Windows - run in Powershell `\cli-doc.exe`
-
 ---
 ## 3. Reference
 ### About idea
