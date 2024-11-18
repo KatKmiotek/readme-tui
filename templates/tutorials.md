@@ -1,5 +1,3 @@
-## 1. Tutorials
-
 ### Purpose
 > Step-by-step lessons designed to help new users get started with the project.
 

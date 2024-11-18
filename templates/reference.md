@@ -1,5 +1,3 @@
-## 4. Reference
-
 ### AWS Accounts
 
 This project deploys to multiple AWS accounts across different environments. Below are the details for each environment to help locate and manage project resources.

@@ -1,5 +1,3 @@
-## 3. Explanations
-
 ### Purpose
 > Provide conceptual information to deepen user understanding.
 

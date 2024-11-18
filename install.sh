@@ -8,7 +8,6 @@ BINARY_NAME="cli-doc"
 INSTALL_DIR="/usr/local/bin"
 
 GREEN='\033[0;32m'
-RED='\033[0;31m'
 NC='\033[0m'
 
 echo "📦 Installing $BINARY_NAME..."

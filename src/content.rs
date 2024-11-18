@@ -12,6 +12,7 @@ use std::{collections::HashMap, fs, path::Path};
 
 #[derive(Hash, Eq, PartialEq, Clone, Debug)]
 pub enum ContentListItem {
+    ProjectName,
     Tutorials,
     Guides,
     Explanation,
@@ -39,6 +40,7 @@ impl Default for Content {
 impl Content {
     pub fn new() -> Self {
         let mut topic_content_map = HashMap::new();
+        topic_content_map.insert(ContentListItem::ProjectName, "name.md".to_string());
         topic_content_map.insert(ContentListItem::Tutorials, "tutorials.md".to_string());
         topic_content_map.insert(ContentListItem::Guides, "guides.md".to_string());
         topic_content_map.insert(ContentListItem::Explanation, "explanation.md".to_string());
@@ -59,10 +61,11 @@ impl Content {
 
     fn get_content_for_index(index: usize) -> Option<ContentListItem> {
         match index {
-            0 => Some(ContentListItem::Tutorials),
-            1 => Some(ContentListItem::Guides),
-            2 => Some(ContentListItem::Explanation),
-            3 => Some(ContentListItem::Reference),
+            0 => Some(ContentListItem::ProjectName),
+            1 => Some(ContentListItem::Tutorials),
+            2 => Some(ContentListItem::Guides),
+            3 => Some(ContentListItem::Explanation),
+            4 => Some(ContentListItem::Reference),
             _ => None,
         }
     }

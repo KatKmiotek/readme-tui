@@ -27,6 +27,7 @@ impl Screen {
         list_state.select(Some(0));
         Self {
             items: vec![
+                "Project Name".to_string(),
                 "Tutorials".to_string(),
                 "How-to Guides".to_string(),
                 "Explanation".to_string(),

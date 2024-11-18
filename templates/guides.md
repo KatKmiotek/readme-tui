@@ -1,5 +1,3 @@
-## 2. How-To Guides
-
 ### Purpose
 > Provide focused guidance for achieving specific tasks within the project.
 

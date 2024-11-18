@@ -1,4 +1,5 @@
-use crossterm::event::{self, KeyCode, KeyEvent};
+use copypasta::{ClipboardContext, ClipboardProvider};
+use crossterm::event::{self, KeyCode, KeyEvent, KeyModifiers};
 use std::cell::RefCell;
 use std::fs::{self, File};
 use std::io::{self, Write};
@@ -6,7 +7,7 @@ use std::path::Path;
 use std::rc::Rc;
 use std::time::Duration;
 
-use crate::content::Content;
+use crate::content::{Content, ContentListItem};
 use crate::popup::{Popup, PopupButton};
 use crate::screen::Screen;
 pub struct EventHandler {
@@ -73,6 +74,19 @@ impl EventHandler {
     fn handle_content_input(&mut self, key: KeyEvent) -> io::Result<()> {
         let mut content = self.content.borrow_mut();
         match key.code {
+            KeyCode::Char('v') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                if let Ok(mut ctx) = ClipboardContext::new() {
+                    if let Ok(contents) = ctx.get_contents() {
+                        for c in contents.chars() {
+                            if c == '\n' {
+                                content.handle_enter();
+                            } else {
+                                content.insert_char(c);
+                            }
+                        }
+                    }
+                }
+            }
             KeyCode::Char(c) => content.insert_char(c),
             KeyCode::Enter => content.handle_enter(),
             KeyCode::Esc => content.toggle_insert(),
@@ -124,15 +138,34 @@ impl EventHandler {
             fs::create_dir_all(dir_path)?;
         }
         let mut file = File::create(file_path)?;
+        if let Some(project_lines) = self
+            .content
+            .borrow()
+            .file_to_save
+            .get(&ContentListItem::ProjectName)
+        {
+            writeln!(
+                file,
+                "# {}",
+                project_lines
+                    .first()
+                    .unwrap_or(&"Documentation".to_string())
+            )?;
+            writeln!(file, "\nThis documentation follows the Diátaxis framework.")?;
+            writeln!(file, "Learn more at https://diataxis.fr/")?;
+            writeln!(file)?;
+        }
         let content = self.content.borrow();
         for (section, lines) in &content.file_to_save {
-            writeln!(file, "## {:?}", section)?;
+            if section != &ContentListItem::ProjectName {
+                writeln!(file, "## {:?}", section)?;
 
-            for line in lines {
-                writeln!(file, "{}", line)?;
+                for line in lines {
+                    writeln!(file, "{}", line)?;
+                }
+
+                writeln!(file)?;
             }
-
-            writeln!(file)?;
         }
 
         println!("Your input has been saved to output/README.md");
