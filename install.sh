@@ -48,6 +48,7 @@ if [ -n "$SHELL_CONFIG" ]; then
         echo "Run 'source $SHELL_CONFIG' to update your current session"
     fi
 fi
+echo "shell config is $SHELL_CONFIG"
 
 echo -e "${GREEN}Successfully installed $BINARY_NAME! 🎉${NC}"
 echo "Run '$BINARY_NAME' to use this TUI."
