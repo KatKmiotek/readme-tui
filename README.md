@@ -59,14 +59,14 @@ Steps:
 #### Guide 1: Installing release executable
 
 Steps:
-1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/readme-tui/main/install.sh | sh`
+1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/txtui/main/install.sh | sh`
 2. **Verify**: verify installation by running `txtui -v`
 3. **Execute**: now, you can use `txtui` to run application
 
 #### Guide 2: Downloading selected release
 
 Steps:
-1. **Step 1**: In the github repository page go to [release section](https://github.com/KatKmiotek/readme-tui/releases)
+1. **Step 1**: In the github repository page go to [release section](https://github.com/KatKmiotek/txtui/releases)
 2. **Step 2**: Select most recent release and from within attached files package for Windows (ending .exe) or zipped package for Mac
 3. **Step 3**: Mac - after download open in Finder > right-click Open with > Select your terminal + accept the source. Then you can run it in terminal `./txtui`
 4. **Step 4**: Windows - run in Powershell `\txtui.exe`
