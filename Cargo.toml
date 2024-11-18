@@ -1,6 +1,6 @@
 [package]
 name = "txtui"
-version = "0.0.13"
+version = "0.0.14"
 edition = "2021"
 description = "A CLI documentation tool following Diátaxis framework"
 
