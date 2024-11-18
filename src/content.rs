@@ -1,7 +1,8 @@
 use color_eyre::eyre::Result;
 use ratatui::{
     layout::{Position, Rect},
-    widgets::{Block, Borders, ListState, Paragraph},
+    style::{Color, Style},
+    widgets::{Block, Borders, Clear, ListState, Paragraph},
     Frame,
 };
 use std::{collections::HashMap, fs, path::Path};
@@ -21,6 +22,8 @@ pub struct Content {
     pub file_to_save: HashMap<ContentListItem, Vec<String>>,
     pub cursor_index_x: usize,
     pub cursor_index_y: usize,
+    scroll_offset: usize,
+    visible_height: usize,
 }
 
 impl Default for Content {
@@ -44,6 +47,8 @@ impl Content {
             file_to_save: HashMap::new(),
             cursor_index_x: 0,
             cursor_index_y: 0,
+            scroll_offset: 0,
+            visible_height: 0,
         }
     }
 
@@ -89,6 +94,8 @@ impl Content {
     }
 
     pub fn render(&mut self, frame: &mut Frame, area: Rect, list_state: &ListState) {
+        self.visible_height = (area.height as usize).saturating_sub(2);
+
         if !self.enable_insert_mode {
             if let Some(selected_index) = list_state.selected() {
                 self.select_placeholder(selected_index);
@@ -103,18 +110,48 @@ impl Content {
             "Press I to enter editing mode"
         };
 
-        if self.enable_insert_mode && self.cursor_index_y < self.content_input.len() {
-            frame.set_cursor_position(Position::new(
-                area.x + self.cursor_index_x as u16 + 1,
-                area.y + self.cursor_index_y as u16 + 1,
-            ));
+        self.adjust_scroll();
+
+        if self.enable_insert_mode {
+            let cursor_y = self.cursor_index_y.saturating_sub(self.scroll_offset);
+            if cursor_y < self.visible_height {
+                frame.set_cursor_position(Position::new(
+                    area.x + self.cursor_index_x as u16 + 1,
+                    area.y + cursor_y as u16 + 1,
+                ));
+            }
         }
 
-        let content_str = self.content_input.join("\n");
-        let content_paragraph = Paragraph::new(content_str.as_str())
-            .block(Block::default().borders(Borders::ALL).title(title));
+        let block = Block::default()
+            .borders(Borders::ALL)
+            .title(title)
+            .border_style(Style::default().fg(Color::Red));
+
+        let inner_area = block.inner(area);
+        frame.render_widget(Clear, inner_area);
+
+        let visible_content: Vec<&str> = self
+            .content_input
+            .iter()
+            .skip(self.scroll_offset)
+            .take(self.visible_height)
+            .map(|s| s.as_str())
+            .collect();
+
+        let content_str = visible_content.join("\n");
+        let content_paragraph = Paragraph::new(content_str).block(block);
 
         frame.render_widget(content_paragraph, area);
+    }
+
+    fn adjust_scroll(&mut self) {
+        if self.cursor_index_y >= self.scroll_offset + self.visible_height {
+            self.scroll_offset = self.cursor_index_y.saturating_sub(self.visible_height - 1);
+        } else if self.cursor_index_y < self.scroll_offset {
+            self.scroll_offset = self.cursor_index_y;
+        }
+        let max_scroll = self.content_input.len().saturating_sub(self.visible_height);
+        self.scroll_offset = self.scroll_offset.min(max_scroll);
     }
 
     pub fn toggle_insert(&mut self) {
@@ -169,6 +206,7 @@ impl Content {
             self.cursor_index_y -= 1;
             let line_length = self.content_input[self.cursor_index_y].len();
             self.cursor_index_x = self.cursor_index_x.min(line_length);
+            self.adjust_scroll();
         }
     }
 
@@ -177,6 +215,7 @@ impl Content {
             self.cursor_index_y += 1;
             let line_length = self.content_input[self.cursor_index_y].len();
             self.cursor_index_x = self.cursor_index_x.min(line_length);
+            self.adjust_scroll();
         }
     }
 

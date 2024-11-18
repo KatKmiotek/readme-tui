@@ -79,8 +79,9 @@ impl Screen {
         frame.render_stateful_widget(list, navigation_menu, &mut self.list_state);
         if self.show_popup {
             popup.show_popup(frame, area);
+        } else {
+            content.render(frame, content_area, &self.list_state);
         }
-        content.render(frame, content_area, &self.list_state);
     }
 
     pub fn next(&mut self, content: &mut Content) {
