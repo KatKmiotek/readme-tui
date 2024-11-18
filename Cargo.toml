@@ -2,10 +2,12 @@
 name = "txtui"
 version = "0.0.13"
 edition = "2021"
+description = "A CLI documentation tool following Diátaxis framework"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+clap = { version = "4.5.21", features = ["derive"] }
 color-eyre = "0.6.3"
 copypasta = "0.10.1"
 crossterm = "0.28.1"

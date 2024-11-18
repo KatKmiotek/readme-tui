@@ -47,4 +47,4 @@ if [ -n "$SHELL_CONFIG" ]; then
 fi
 
 echo "Successfully installed $BINARY_NAME! 🎉"
-echo "Run '$BINARY_NAME' to use this TUI."
+echo "You can verify installation by running: $BINARY_NAME -v"
