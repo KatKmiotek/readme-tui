@@ -7,9 +7,6 @@ REPO="readme-tui"
 BINARY_NAME="cli-doc"
 INSTALL_DIR="/usr/local/bin"
 
-GREEN='\033[0;32m'
-NC='\033[0m'
-
 echo "📦 Installing $BINARY_NAME..."
 
 echo "🔍 Fetching latest release..."
@@ -48,7 +45,6 @@ if [ -n "$SHELL_CONFIG" ]; then
         echo "Run 'source $SHELL_CONFIG' to update your current session"
     fi
 fi
-echo "shell config is $SHELL_CONFIG"
 
-echo -e "${GREEN}Successfully installed $BINARY_NAME! 🎉${NC}"
+echo "Successfully installed $BINARY_NAME! 🎉"
 echo "Run '$BINARY_NAME' to use this TUI."
