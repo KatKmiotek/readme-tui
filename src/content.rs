@@ -2,7 +2,10 @@ use color_eyre::eyre::Result;
 use ratatui::{
     layout::{Position, Rect},
     style::{Color, Style},
-    widgets::{Block, Borders, Clear, ListState, Paragraph},
+    widgets::{
+        Block, Borders, Clear, ListState, Paragraph, Scrollbar, ScrollbarOrientation,
+        ScrollbarState,
+    },
     Frame,
 };
 use std::{collections::HashMap, fs, path::Path};
@@ -24,6 +27,7 @@ pub struct Content {
     pub cursor_index_y: usize,
     scroll_offset: usize,
     visible_height: usize,
+    pub vertical_scroll_state: ScrollbarState,
 }
 
 impl Default for Content {
@@ -49,6 +53,7 @@ impl Content {
             cursor_index_y: 0,
             scroll_offset: 0,
             visible_height: 0,
+            vertical_scroll_state: ScrollbarState::default(),
         }
     }
 
@@ -140,8 +145,20 @@ impl Content {
 
         let content_str = visible_content.join("\n");
         let content_paragraph = Paragraph::new(content_str).block(block);
+        self.vertical_scroll_state = self
+            .vertical_scroll_state
+            .content_length(self.content_input.len())
+            .position(self.scroll_offset)
+            .viewport_content_length(self.visible_height);
 
         frame.render_widget(content_paragraph, area);
+        frame.render_stateful_widget(
+            Scrollbar::new(ScrollbarOrientation::VerticalRight)
+                .begin_symbol(Some("↑"))
+                .end_symbol(Some("↓")),
+            area,
+            &mut self.vertical_scroll_state,
+        );
     }
 
     fn adjust_scroll(&mut self) {
