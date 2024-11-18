@@ -44,10 +44,13 @@ impl Screen {
             .constraints([Constraint::Percentage(5), Constraint::Percentage(95)])
             .split(area);
         let top_area = all[0];
-        let navbar = Block::new()
-            .title("CLI DOCS ".bold())
-            .title("                                   Use ▲ ▼  to navigate, press ESC to exit");
-        frame.render_widget(navbar, top_area);
+        let navbar = Block::new().title("CLI DOCS ".bold());
+        let additional_instruction = if content.enable_insert_mode {
+            "                      Use ◄ ▲ ▼ ► to navigate, F1 - scroll to top, F2 - scroll to bottom, press ESC to exit"
+        } else {
+            "                      Use ▲ ▼  to navigate, press i to edit, press ESC to exit"
+        };
+        frame.render_widget(navbar.title(additional_instruction), top_area);
         let main_area = all[1];
         let layout = Layout::default()
             .direction(Direction::Horizontal)
@@ -56,11 +59,10 @@ impl Screen {
         let navigation_menu = layout[0];
         let content_area = layout[1];
 
-        let content_text = content.content_input.join("\n"); // Join the lines into a single string
+        let content_text = content.content_input.join("\n");
         let content_block = Paragraph::new(content_text.as_str()).block(
             Block::default()
                 .borders(Borders::ALL)
-                .title("Press I to enter editing mode")
                 .border_style(Style::default().fg(Color::Red)),
         );
         frame.render_widget(content_block, content_area);
@@ -71,7 +73,7 @@ impl Screen {
             .map(|i| ListItem::new(i.as_str()))
             .collect();
         let list = List::new(items)
-            .block(Block::bordered().title("Topics"))
+            .block(Block::bordered())
             .style(Style::default().fg(Color::White))
             .highlight_style(Style::default().bg(Color::Yellow).fg(Color::Black))
             .highlight_symbol(">> ");
@@ -81,6 +83,7 @@ impl Screen {
             popup.show_popup(frame, area);
         } else {
             content.render(frame, content_area, &self.list_state);
+            if content.enable_insert_mode {}
         }
     }
 

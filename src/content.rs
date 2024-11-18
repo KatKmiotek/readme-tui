@@ -109,12 +109,6 @@ impl Content {
             self.save_content_for_current_topic(selected_index);
         }
 
-        let title = if self.enable_insert_mode {
-            "Press ESC to exit editor mode."
-        } else {
-            "Press I to enter editing mode"
-        };
-
         self.adjust_scroll();
 
         if self.enable_insert_mode {
@@ -129,7 +123,6 @@ impl Content {
 
         let block = Block::default()
             .borders(Borders::ALL)
-            .title(title)
             .border_style(Style::default().fg(Color::Red));
 
         let inner_area = block.inner(area);
@@ -234,6 +227,36 @@ impl Content {
             self.cursor_index_x = self.cursor_index_x.min(line_length);
             self.adjust_scroll();
         }
+    }
+
+    pub fn scroll_to_bottom(&mut self) {
+        if self.content_input.len() > self.visible_height {
+            self.scroll_offset = self.content_input.len() - self.visible_height;
+            self.cursor_index_y = self.content_input.len().saturating_sub(1);
+            self.cursor_index_x = self
+                .content_input
+                .last()
+                .map(|line| line.len())
+                .unwrap_or(0);
+        }
+
+        self.vertical_scroll_state = self
+            .vertical_scroll_state
+            .position(self.scroll_offset)
+            .content_length(self.content_input.len())
+            .viewport_content_length(self.visible_height);
+    }
+
+    pub fn scroll_to_top(&mut self) {
+        self.scroll_offset = 0;
+        self.cursor_index_y = 0;
+        self.cursor_index_x = 0;
+
+        self.vertical_scroll_state = self
+            .vertical_scroll_state
+            .position(0)
+            .content_length(self.content_input.len())
+            .viewport_content_length(self.visible_height);
     }
 
     pub fn insert_char(&mut self, ch: char) {
