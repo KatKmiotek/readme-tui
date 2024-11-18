@@ -1,6 +1,8 @@
-## 📝 Cli Docs
-Cli Docs is Terminal User Interface app that aims to enable user to write projects documentation in [The Diátaxis framework](https://diataxis.fr/)\
-- [📝 Cli Docs](#-cli-docs)
+## 📝 TXTUI
+![txtui-logo](txtui.jpg)
+
+txtui is Terminal User Interface app that aims to enable user to write projects documentation in [The Diátaxis framework](https://diataxis.fr/)\
+- [📝 TXTUI](#-txtui)
 - [1. Tutorials](#1-tutorials)
   - [Tutorial 1: Running project locally](#tutorial-1-running-project-locally)
     - [Objective](#objective)
@@ -64,8 +66,8 @@ Steps:
 Steps:
 1. **Step 1**: In the github repository page go to [release section](https://github.com/KatKmiotek/readme-tui/releases)
 2. **Step 2**: Select most recent release and from within attached files package for Windows (ending .exe) or zipped package for Mac
-3. **Step 3**: Mac - after download open in Finder > right-click Open with > Select your terminal + accept the source. Then you can run it in terminal `./cli-doc`
-4. **Step 4**: Windows - run in Powershell `\cli-doc.exe`
+3. **Step 3**: Mac - after download open in Finder > right-click Open with > Select your terminal + accept the source. Then you can run it in terminal `./txtui`
+4. **Step 4**: Windows - run in Powershell `\txtui.exe`
 ---
 ## 3. Reference
 ### About idea

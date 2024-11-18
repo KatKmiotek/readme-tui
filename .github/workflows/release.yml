@@ -7,6 +7,7 @@ on:
 
 jobs:
   get-version:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get-version.outputs.version }}
@@ -16,6 +17,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install cargo-edit
+        run: cargo install cargo-edit
+
       - name: Get release version
         id: get-version
         uses: paulhatch/semantic-version@v5.4.0
@@ -24,6 +28,17 @@ jobs:
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
           version_format: "${major}.${minor}.${patch}"
+
+      - name: Update Cargo.toml version
+        run: cargo set-version ${{ steps.get-version.outputs.version }}
+
+      - name: Commit version update
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add Cargo.toml
+          git commit -m "feat: bump version to ${{ steps.get-version.outputs.version }}"
+          git push
 
   create-release:
     strategy:
@@ -53,7 +68,7 @@ jobs:
         if: ${{ matrix.runner == 'macos-latest'}}
         run: |
           cd target/${{ matrix.target }}/release
-          zip -j cli-doc${{ matrix.extension }} cli-doc
+          zip -j txtui${{ matrix.extension }} txtui
 
 
       - name: Create release and upload binary
@@ -62,7 +77,7 @@ jobs:
           tag_name: ${{ needs.get-version.outputs.version_tag }}
           name: Release ${{ needs.get-version.outputs.version_tag }}
           files: |
-            target/${{ matrix.target }}/release/cli-doc${{ matrix.extension }}
+            target/${{ matrix.target }}/release/txtui${{ matrix.extension }}
           draft: false
           prerelease: false
         env:
