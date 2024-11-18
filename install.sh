@@ -4,7 +4,7 @@ set -e
 
 OWNER="KatKmiotek"
 REPO="readme-tui"
-BINARY_NAME="cli-doc"
+BINARY_NAME="txtui"
 INSTALL_DIR="/usr/local/bin"
 
 echo "📦 Installing $BINARY_NAME..."

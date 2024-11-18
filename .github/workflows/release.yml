@@ -53,7 +53,7 @@ jobs:
         if: ${{ matrix.runner == 'macos-latest'}}
         run: |
           cd target/${{ matrix.target }}/release
-          zip -j cli-doc${{ matrix.extension }} cli-doc
+          zip -j txtui${{ matrix.extension }} txtui
 
 
       - name: Create release and upload binary
@@ -62,7 +62,7 @@ jobs:
           tag_name: ${{ needs.get-version.outputs.version_tag }}
           name: Release ${{ needs.get-version.outputs.version_tag }}
           files: |
-            target/${{ matrix.target }}/release/cli-doc${{ matrix.extension }}
+            target/${{ matrix.target }}/release/txtui${{ matrix.extension }}
           draft: false
           prerelease: false
         env:
