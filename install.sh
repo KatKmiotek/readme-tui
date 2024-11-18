@@ -7,9 +7,6 @@ REPO="readme-tui"
 BINARY_NAME="cli-doc"
 INSTALL_DIR="/usr/local/bin"
 
-GREEN='\033[0;32m'
-NC='\033[0m'
-
 echo "📦 Installing $BINARY_NAME..."
 
 echo "🔍 Fetching latest release..."
@@ -31,5 +28,23 @@ echo "📝 Installing $BINARY_NAME to $INSTALL_DIR..."
 sudo mv "$TMP_DIR/$BINARY_NAME" "$INSTALL_DIR/"
 sudo chmod +x "$INSTALL_DIR/$BINARY_NAME"
 
-echo -e "${GREEN}Successfully installed $BINARY_NAME! 🎉${NC}"
+SHELL_CONFIG=""
+if [ -n "$ZSH_VERSION" ]; then
+    SHELL_CONFIG="$HOME/.zshrc"
+elif [ -n "$BASH_VERSION" ]; then
+    SHELL_CONFIG="$HOME/.bash_profile"
+    if [ ! -f "$SHELL_CONFIG" ]; then
+        SHELL_CONFIG="$HOME/.bashrc"
+    fi
+fi
+
+if [ -n "$SHELL_CONFIG" ]; then
+    if ! echo $PATH | grep -q "/usr/local/bin"; then
+        echo 'export PATH="/usr/local/bin:$PATH"' >> "$SHELL_CONFIG"
+        echo "Added /usr/local/bin to PATH in $SHELL_CONFIG"
+        echo "Run 'source $SHELL_CONFIG' to update your current session"
+    fi
+fi
+
+echo "Successfully installed $BINARY_NAME! 🎉"
 echo "Run '$BINARY_NAME' to use this TUI."
