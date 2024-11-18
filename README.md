@@ -1,4 +1,6 @@
 ## 📝 TXTUI
+![txtui-logo](txtui.jpg)
+
 txtui is Terminal User Interface app that aims to enable user to write projects documentation in [The Diátaxis framework](https://diataxis.fr/)\
 - [📝 TXTUI](#-txtui)
 - [1. Tutorials](#1-tutorials)
