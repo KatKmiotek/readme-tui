@@ -34,7 +34,7 @@ Tutorials:
 By following those steps you will setup your machine to run CLI Docs tool
 
 Steps:
-1. **Step 1**: Mac - Install rustup via running `curl https://sh.rustup.rs -sSf | sh`
+1. **Step 1**: Mac - Install rustup via [instruction](https://doc.rust-lang.org/cargo/getting-started/) from The Rust book
 2. **Step 2**: Windows - Install rustup via [instruction](https://doc.rust-lang.org/cargo/getting-started/installation.html) from The Rust book
 3. **Step 3**: Confirm `cargo -V` outputs version 1.82.0 or higher
 4. **Step 4**: Run `cargo run` - this will build project
@@ -97,6 +97,7 @@ The project is TUI (terminal User Interface) written in Rust in [Ratatui](https:
 ### Deployment pipeline
 1. **Pull Request**: on pull request event there will be number of checks performed that include pre-commit hooks and tests
 2. **Merge to main**: will trigger building project into Windows and Mac binaries that are uploaded as part of tagged release
+3. **Merge to main**: will also tag repository and update Cargo.toml version
 
 ### Static code analysis
 Static Code Analysis runs `cargo fmt` and `clippy` commands.
