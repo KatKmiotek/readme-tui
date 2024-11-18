@@ -27,6 +27,7 @@ impl Screen {
         list_state.select(Some(0));
         Self {
             items: vec![
+                "Project Name".to_string(),
                 "Tutorials".to_string(),
                 "How-to Guides".to_string(),
                 "Explanation".to_string(),
@@ -148,6 +149,9 @@ mod tests {
         assert_eq!(screen.list_state.selected(), Some(3));
 
         screen.next(&mut content);
+        assert_eq!(screen.list_state.selected(), Some(4));
+
+        screen.next(&mut content);
         assert_eq!(screen.list_state.selected(), Some(0));
     }
 
@@ -181,11 +185,12 @@ mod tests {
     fn test_screen_items_length() {
         let screen = Screen::new();
 
-        assert_eq!(screen.items.len(), 4);
-        assert_eq!(screen.items[0], "Tutorials");
-        assert_eq!(screen.items[1], "How-to Guides");
-        assert_eq!(screen.items[2], "Explanation");
-        assert_eq!(screen.items[3], "Reference");
+        assert_eq!(screen.items.len(), 5);
+        assert_eq!(screen.items[0], "Project Name");
+        assert_eq!(screen.items[1], "Tutorials");
+        assert_eq!(screen.items[2], "How-to Guides");
+        assert_eq!(screen.items[3], "Explanation");
+        assert_eq!(screen.items[4], "Reference");
     }
 
     #[test]

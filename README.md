@@ -4,14 +4,12 @@ Cli Docs is Terminal User Interface app that aims to enable user to write projec
 - [1. Tutorials](#1-tutorials)
   - [Tutorial 1: Running project locally](#tutorial-1-running-project-locally)
     - [Objective](#objective)
-    - [Steps](#steps)
   - [Tutorial 2: Installing pre-commit hooks](#tutorial-2-installing-pre-commit-hooks)
     - [Objective](#objective-1)
-    - [Steps](#steps-1)
 - [2. How-To Guides](#2-how-to-guides)
   - [How-To Guides](#how-to-guides)
     - [Guide 1: Installing release executable](#guide-1-installing-release-executable)
-    - [Steps](#steps-2)
+    - [Guide 2: Downloading selected release](#guide-2-downloading-selected-release)
 - [3. Reference](#3-reference)
   - [About idea](#about-idea)
 - [4. Explanation](#4-explanation)
@@ -33,7 +31,7 @@ Tutorials:
 #### Objective
 By following those steps you will setup your machine to run CLI Docs tool
 
-#### Steps
+Steps:
 1. **Step 1**: Mac - Install rustup via running `curl https://sh.rustup.rs -sSf | sh`
 2. **Step 2**: Windows - Install rustup via [instruction](https://doc.rust-lang.org/cargo/getting-started/installation.html) from The Rust book
 3. **Step 3**: Confirm `cargo -V` outputs version 1.82.0 or higher
@@ -44,7 +42,7 @@ By following those steps you will setup your machine to run CLI Docs tool
 #### Objective
 Execute static code analysis locally
 
-#### Steps
+Steps:
 1. **Step 1**: Install [pre-commit]()
 2. **Step 2**: Run `pre-commit install` to add hook to .git/hooks/pre-commit - from now on git commit event staged files will be checked
 3. **Step 3**: To run pre-commit on all files `pre-commit run --all-files`
@@ -54,15 +52,20 @@ Execute static code analysis locally
 
 ### How-To Guides
 1. **[Guide 1: Installing release executable](#guide-1-installing-release-executable)**
+2. **[Guide 2: Downloading selected release](#guide-2-downloading-selected-release)**
 
 #### Guide 1: Installing release executable
 
-#### Steps
+Steps:
+1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/readme-tui/main/install.sh | sh`
+
+#### Guide 2: Downloading selected release
+
+Steps:
 1. **Step 1**: In the github repository page go to [release section](https://github.com/KatKmiotek/readme-tui/releases)
 2. **Step 2**: Select most recent release and from within attached files package for Windows (ending .exe) or zipped package for Mac
 3. **Step 3**: Mac - after download open in Finder > right-click Open with > Select your terminal + accept the source. Then you can run it in terminal `./cli-doc`
 4. **Step 4**: Windows - run in Powershell `\cli-doc.exe`
-
 ---
 ## 3. Reference
 ### About idea
