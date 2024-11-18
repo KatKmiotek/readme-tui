@@ -60,6 +60,8 @@ Steps:
 
 Steps:
 1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/readme-tui/main/install.sh | sh`
+2. **Verify**: verify installation by running `txtui -v`
+3. **Execute**: now, you can use `txtui` to run application
 
 #### Guide 2: Downloading selected release
 
