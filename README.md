@@ -62,7 +62,6 @@ Execute static code analysis locally
 
 #### Steps
 1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/readme-tui/main/install.sh | sh`
-2. **Step for Windows**: run `iwr -useb https://raw.githubusercontent.com/KatKmiotek/readme-tui/main/install.ps1 | iex`
 
 #### Guide 2: Downloading selected release
 
