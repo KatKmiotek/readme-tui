@@ -1,7 +1,7 @@
 ## 📝 TXTUI
 ![txtui-logo](txtui.jpg)
 
-txtui is Terminal User Interface app that aims to enable user to write projects documentation in [The Diátaxis framework](https://diataxis.fr/)\
+Txtui is Terminal User Interface app that aims to enable user to write projects documentation in [The Diátaxis framework](https://diataxis.fr/)
 - [📝 TXTUI](#-txtui)
 - [1. Tutorials](#1-tutorials)
   - [Tutorial 1: Running project locally](#tutorial-1-running-project-locally)
@@ -62,6 +62,7 @@ Steps:
 1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/txtui/main/install.sh | sh`
 2. **Verify**: verify installation by running `txtui -v`
 3. **Execute**: now, you can use `txtui` to run application
+4. **Help**: To view all available commands run `txtui --help`
 
 #### Guide 2: Downloading selected release
 
