@@ -1,4 +1,4 @@
-use crate::{content::Content, events::EventHandler, popup::Popup, screen::Screen};
+use crate::{content::Content, events::EventHandler, popup::Popup, screen::Screen, CliConfig};
 use color_eyre::Result;
 use crossterm::{
     event::{DisableMouseCapture, EnableMouseCapture},
@@ -19,12 +19,17 @@ pub struct App {
 }
 
 impl App {
-    pub fn new() -> App {
+    pub fn new(cli_config: CliConfig) -> App {
         let screen = Rc::new(RefCell::new(Screen::new()));
         let popup = Rc::new(RefCell::new(Popup::new()));
         let content = Rc::new(RefCell::new(Content::new()));
-        let event_handler =
-            EventHandler::new(Rc::clone(&screen), Rc::clone(&popup), Rc::clone(&content));
+        let event_handler = EventHandler::new(
+            Rc::clone(&screen),
+            Rc::clone(&popup),
+            Rc::clone(&content),
+            cli_config.output_dir.clone(),
+            cli_config.file_name.clone(),
+        );
         Self {
             event_handler,
             screen,

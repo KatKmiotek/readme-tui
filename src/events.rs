@@ -15,6 +15,8 @@ pub struct EventHandler {
     screen: Rc<RefCell<Screen>>,
     popup: Rc<RefCell<Popup>>,
     content: Rc<RefCell<Content>>,
+    output_dir: String,
+    file_name: String,
 }
 
 impl EventHandler {
@@ -22,12 +24,16 @@ impl EventHandler {
         screen: Rc<RefCell<Screen>>,
         popup: Rc<RefCell<Popup>>,
         content: Rc<RefCell<Content>>,
+        output_dir: String,
+        file_name: String,
     ) -> Self {
         Self {
             should_quit: false,
             screen,
             popup,
             content,
+            output_dir,
+            file_name,
         }
     }
 
@@ -131,8 +137,8 @@ impl EventHandler {
     }
 
     fn save_to_file(&self) -> io::Result<()> {
-        let dir_path = Path::new("output");
-        let file_path = dir_path.join("README.md");
+        let dir_path = Path::new(&self.output_dir);
+        let file_path = dir_path.join(&self.file_name);
 
         if !dir_path.exists() {
             fs::create_dir_all(dir_path)?;
@@ -167,8 +173,6 @@ impl EventHandler {
                 writeln!(file)?;
             }
         }
-
-        println!("Your input has been saved to output/README.md");
         Ok(())
     }
 }

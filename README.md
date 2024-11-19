@@ -1,7 +1,6 @@
 ## 📝 TXTUI
-![txtui-logo](txtui.jpg)
 
-txtui is Terminal User Interface app that aims to enable user to write projects documentation in [The Diátaxis framework](https://diataxis.fr/)\
+Txtui is Terminal User Interface app that aims to enable user to write projects documentation in [The Diátaxis framework](https://diataxis.fr/)
 - [📝 TXTUI](#-txtui)
 - [1. Tutorials](#1-tutorials)
   - [Tutorial 1: Running project locally](#tutorial-1-running-project-locally)
@@ -59,9 +58,11 @@ Steps:
 #### Guide 1: Installing release executable
 
 Steps:
-1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/txtui/main/install.sh | sh`
-2. **Verify**: verify installation by running `txtui -v`
-3. **Execute**: now, you can use `txtui` to run application
+1. **Step for Mac**: Run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/txtui/main/install.sh | sh`
+2. **Verify**: Verify installation by running `txtui -v`
+3. **Execute**: Now, you can use `txtui` to run application
+4. **Help**: To view all available commands run `txtui --help`
+5. **Output**: Created README file gets saved in output directory ( output directory can be set via cli flag)
 
 #### Guide 2: Downloading selected release
 
@@ -92,7 +93,8 @@ Diátaxis identifies four distinct needs, and four corresponding forms of docume
 ## 4. Explanation
 
 ### Project
-The project is TUI (terminal User Interface) written in Rust in [Ratatui](https://ratatui.rs/) framework
+The project is TUI (terminal User Interface) written in Rust in [Ratatui](https://ratatui.rs/) framework.
+The **clap** crate is used to parse CLI arguments.
 
 ### Deployment pipeline
 1. **Pull Request**: on pull request event there will be number of checks performed that include pre-commit hooks and tests
@@ -102,3 +104,5 @@ The project is TUI (terminal User Interface) written in Rust in [Ratatui](https:
 ### Static code analysis
 Static Code Analysis runs `cargo fmt` and `clippy` commands.
 Pre commit hooks can be executed locally after installation - see [guide](#tutorial-2-installing-pre-commit-hooks)
+
+![txtui-logo](txtui.jpg)
