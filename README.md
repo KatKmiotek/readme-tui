@@ -1,5 +1,4 @@
 ## 📝 TXTUI
-![txtui-logo](txtui.jpg)
 
 Txtui is Terminal User Interface app that aims to enable user to write projects documentation in [The Diátaxis framework](https://diataxis.fr/)
 - [📝 TXTUI](#-txtui)
@@ -94,7 +93,8 @@ Diátaxis identifies four distinct needs, and four corresponding forms of docume
 ## 4. Explanation
 
 ### Project
-The project is TUI (terminal User Interface) written in Rust in [Ratatui](https://ratatui.rs/) framework
+The project is TUI (terminal User Interface) written in Rust in [Ratatui](https://ratatui.rs/) framework.  
+The **clap** crate is used to parse CLI arguments. 
 
 ### Deployment pipeline
 1. **Pull Request**: on pull request event there will be number of checks performed that include pre-commit hooks and tests
@@ -102,5 +102,7 @@ The project is TUI (terminal User Interface) written in Rust in [Ratatui](https:
 3. **Merge to main**: will also tag repository and update Cargo.toml version
 
 ### Static code analysis
-Static Code Analysis runs `cargo fmt` and `clippy` commands.
+Static Code Analysis runs `cargo fmt` and `clippy` commands.  
 Pre commit hooks can be executed locally after installation - see [guide](#tutorial-2-installing-pre-commit-hooks)
+
+![txtui-logo](txtui.jpg)
