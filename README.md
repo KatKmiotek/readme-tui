@@ -59,10 +59,11 @@ Steps:
 #### Guide 1: Installing release executable
 
 Steps:
-1. **Step for Mac**: run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/txtui/main/install.sh | sh`
-2. **Verify**: verify installation by running `txtui -v`
-3. **Execute**: now, you can use `txtui` to run application
+1. **Step for Mac**: Run `curl -fsSL https://raw.githubusercontent.com/KatKmiotek/txtui/main/install.sh | sh`
+2. **Verify**: Verify installation by running `txtui -v`
+3. **Execute**: Now, you can use `txtui` to run application
 4. **Help**: To view all available commands run `txtui --help`
+5. **Output**: Created README file gets saved in output directory ( output directory can be set via cli flag)
 
 #### Guide 2: Downloading selected release
 
